@@ -1,0 +1,1060 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE PERFIL PREMIUM
+    ============================================ */
+    .profile-container {
+        min-height: 100vh;
+        padding: 140px 2rem 6rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .profile-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header del perfil */
+    .profile-header {
+        margin-bottom: 4rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .profile-header-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .profile-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .profile-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .profile-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    /* Grid principal */
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 3rem;
+    }
+    
+    /* Sidebar de navegación */
+    .profile-sidebar {
+        position: sticky;
+        top: 140px;
+        height: fit-content;
+    }
+    
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .user-avatar {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--platinum);
+    }
+    
+    .avatar-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .avatar-circle::before {
+        content: '';
+        position: absolute;
+        width: 150%;
+        height: 150%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+    
+    .avatar-circle:hover::before {
+        transform: translateX(100%);
+    }
+    
+    .user-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--jet);
+        margin-bottom: 0.5rem;
+    }
+    
+    .user-email {
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-size: 0.95rem;
+    }
+    
+    .profile-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+    
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        color: var(--charcoal);
+        text-decoration: none;
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--gold-leaf);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .nav-link:hover {
+        background: rgba(248, 248, 255, 0.8);
+        color: var(--jet);
+    }
+    
+    .nav-link:hover::before {
+        transform: translateX(0);
+    }
+    
+    .nav-link.active {
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), transparent);
+        color: var(--gold-leaf);
+        font-weight: 500;
+    }
+    
+    .nav-link.active::before {
+        transform: translateX(0);
+    }
+    
+    .nav-icon {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+    }
+    
+    /* Contenido principal */
+    .profile-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .section-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--platinum);
+        position: relative;
+    }
+    
+    .section-header h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 400;
+        color: var(--jet);
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .section-header h3::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+        margin-left: 1rem;
+    }
+    
+    /* Formularios */
+    .form-section {
+        margin-bottom: 3rem;
+    }
+    
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 0.25rem;
+    }
+    
+    .form-control-profile {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+    }
+    
+    .form-control-profile:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+    
+    .form-control-profile:disabled {
+        background: rgba(229, 228, 226, 0.3);
+        color: var(--silver);
+        cursor: not-allowed;
+    }
+    
+    .form-text {
+        color: var(--charcoal);
+        opacity: 0.6;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-text i {
+        color: var(--gold-leaf);
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-leaf);
+        font-size: 1.2rem;
+    }
+    
+    .form-control-profile.has-icon {
+        padding-left: 3.5rem;
+    }
+    
+    /* Botón de guardar */
+    .save-button {
+        padding: 1.2rem 3rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 2rem auto 0;
+    }
+    
+    .save-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .save-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .save-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Estilos para información de solo lectura */
+    .readonly-field {
+        position: relative;
+    }
+    
+    .readonly-field .form-control-profile {
+        padding-right: 3rem;
+    }
+    
+    .lock-icon {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--silver);
+        font-size: 1rem;
+    }
+    
+    /* Alertas y mensajes */
+    .profile-alert {
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideIn 0.5s ease-out;
+    }
+    
+    .profile-alert.success {
+        background: rgba(46, 204, 113, 0.1);
+        border: 1px solid rgba(46, 204, 113, 0.2);
+        color: #27ae60;
+    }
+    
+    .profile-alert.info {
+        background: rgba(52, 152, 219, 0.1);
+        border: 1px solid rgba(52, 152, 219, 0.2);
+        color: var(--steel-blue);
+    }
+    
+    /* Decoraciones flotantes */
+    .floating-ornament {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .ornament-1 {
+        top: 20%;
+        right: 5%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    }
+    
+    .ornament-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(70, 130, 180, 0.1) 0%, transparent 70%);
+        animation-delay: -2s;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-sidebar {
+            position: static;
+        }
+        
+        .profile-card {
+            padding: 2rem;
+        }
+        
+        .profile-content {
+            padding: 2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 120px 1rem 4rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            padding: 2rem 1rem;
+        }
+        
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+        
+        .profile-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .nav-item {
+            margin-bottom: 0;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .nav-link {
+            padding: 0.75rem 1rem;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link span:last-child {
+            display: none;
+        }
+        
+        .nav-icon {
+            font-size: 1rem;
+            margin-right: 0;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .profile-header {
+            margin-bottom: 2rem;
+        }
+        
+        .profile-title {
+            font-size: 2rem;
+        }
+        
+        .profile-content {
+            padding: 1.5rem;
+        }
+        
+        .section-header h3 {
+            font-size: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .section-header h3::after {
+            display: none;
+        }
+        
+        .save-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    /* Animaciones */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+    }
+    
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.6s ease-out forwards;
+    }
+    
+    /* Estados de validación */
+    .is-valid {
+        border-color: #27ae60 !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2327ae60' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        padding-right: calc(1.5em + 0.75rem);
+    }
+    
+    .is-invalid {
+        border-color: #e74c3c !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e74c3c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e74c3c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        padding-right: calc(1.5em + 0.75rem);
+    }
+    
+    .invalid-feedback {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .invalid-feedback i {
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-ornament ornament-1"></div>
+    <div class="floating-ornament ornament-2"></div>
+    
+    <div class="profile-wrapper">
+        <!-- Header -->
+        <div class="profile-header reveal-item">
+            <div class="profile-header-content">
+                <h1 class="profile-title">Mi Perfil</h1>
+                <p class="profile-subtitle">Gestiona tu información personal y preferencias de lectura</p>
+            </div>
+        </div>
+        
+        <!-- Grid principal -->
+        <div class="profile-grid">
+            <!-- Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-card reveal-item" style="animation-delay: 0.1s">
+                    <div class="user-avatar">
+                        <div class="avatar-circle">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <h3 class="user-name">{{ user.username }}</h3>
+                        <p class="user-email">{{ user.email }}</p>
+                    </div>
+                    
+                    <ul class="profile-nav">
+                        <li class="nav-item">
+                            <a href="#informacion-personal" class="nav-link active">
+                                <i class="bi bi-person-circle nav-icon"></i>
+                                <span>Información Personal</span>
+                            </a>
+                            <li class="nav-item">
+                                <a href="{% url 'mis_pedidos' %}" class="nav-link">
+                                    <i class="bi bi-clock-history nav-icon"></i>
+                                    <span>Historial de Compras</span>
+                                </a>
+                            </li>
+                            
+                        <li class="nav-item">
+                            <a href="{% url 'logout' %}" class="nav-link">
+                                <i class="bi bi-box-arrow-right nav-icon"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Contenido principal -->
+            <div class="profile-content reveal-item" style="animation-delay: 0.2s">
+                <!-- Mensajes de éxito/error -->
+                {% if messages %}
+                <div class="profile-alert success mb-4">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div>
+                        {% for message in messages %}
+                        <p class="mb-0">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Sección: Información de la Cuenta -->
+                <div class="form-section" id="informacion-personal">
+                    <div class="section-header">
+                        <h3>
+                            <i class="bi bi-person-badge"></i>
+                            Información de la Cuenta
+                        </h3>
+                        <p class="text-muted mt-2">Datos principales de tu cuenta. Los campos marcados con <span class="text-gold">*</span> son obligatorios.</p>
+                    </div>
+                    
+                    <form method="POST" action="{% url 'perfil' %}" id="profileForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-row">
+                            <!-- Nombre de Usuario (solo lectura) -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Nombre de Usuario
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-with-icon readonly-field">
+                                    <i class="bi bi-person input-icon"></i>
+                                    <input type="text" 
+                                           class="form-control-profile has-icon" 
+                                           value="{{ user.username }}" 
+                                           disabled
+                                           readonly>
+                                    <i class="bi bi-lock lock-icon"></i>
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Tu nombre de usuario no se puede cambiar.
+                                </div>
+                            </div>
+                            
+                            <!-- Correo Electrónico (solo lectura) -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Correo Electrónico
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-with-icon readonly-field">
+                                    <i class="bi bi-envelope input-icon"></i>
+                                    <input type="email" 
+                                           class="form-control-profile has-icon" 
+                                           value="{{ user.email }}" 
+                                           disabled
+                                           readonly>
+                                    <i class="bi bi-lock lock-icon"></i>
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Para cambiar tu email, contacta con soporte.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <!-- Teléfono -->
+                            <div class="form-group">
+                                <label class="form-label">Teléfono</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-telephone input-icon"></i>
+                                    <input type="tel" 
+                                           class="form-control-profile has-icon" 
+                                           id="telefono" 
+                                           name="telefono" 
+                                           value="{{ perfil.telefono|default:'' }}" 
+                                           placeholder="Ej: 55 1234 5678"
+                                           pattern="[0-9\s]{10,15}"
+                                           maxlength="15">
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    Usaremos este número para contactarte sobre tus pedidos.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección: Dirección de Envío -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>
+                                    <i class="bi bi-truck"></i>
+                                    Dirección de Envío Principal
+                                </h3>
+                                <p class="text-muted mt-2">Tu dirección principal para recibir tus libros. Completa todos los campos para una entrega exitosa.</p>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- Dirección Completa -->
+                                <div class="form-group">
+                                    <label class="form-label">Dirección Completa</label>
+                                    <div class="input-with-icon">
+                                        <i class="bi bi-geo-alt input-icon"></i>
+                                        <input type="text" 
+                                               class="form-control-profile has-icon" 
+                                               id="direccion_envio" 
+                                               name="direccion_envio" 
+                                               value="{{ perfil.direccion_envio|default:'' }}" 
+                                               placeholder="Calle, número, colonia"
+                                               required>
+                                    </div>
+                                    {% if form.direccion_envio.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-x-circle"></i>
+                                        {% for error in form.direccion_envio.errors %}<span>{{ error }}</span>{% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <!-- Ciudad -->
+                                <div class="form-group">
+                                    <label class="form-label">Ciudad</label>
+                                    <div class="input-with-icon">
+                                        <i class="bi bi-buildings input-icon"></i>
+                                        <input type="text" 
+                                               class="form-control-profile has-icon" 
+                                               id="ciudad" 
+                                               name="ciudad" 
+                                               value="{{ perfil.ciudad|default:'' }}" 
+                                               placeholder="Ciudad de México"
+                                               required>
+                                    </div>
+                                    {% if form.ciudad.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-x-circle"></i>
+                                        {% for error in form.ciudad.errors %}<span>{{ error }}</span>{% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Código Postal -->
+                                <div class="form-group">
+                                    <label class="form-label">Código Postal</label>
+                                    <div class="input-with-icon">
+                                        <i class="bi bi-postcard input-icon"></i>
+                                        <input type="text" 
+                                               class="form-control-profile has-icon" 
+                                               id="codigo_postal" 
+                                               name="codigo_postal" 
+                                               value="{{ perfil.codigo_postal|default:'' }}" 
+                                               placeholder="06000"
+                                               required
+                                               pattern="[0-9]{5}"
+                                               maxlength="5">
+                                    </div>
+                                    {% if form.codigo_postal.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-x-circle"></i>
+                                        {% for error in form.codigo_postal.errors %}<span>{{ error }}</span>{% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de guardar -->
+                        <div class="text-center">
+                            <button type="submit" class="save-button" id="saveButton">
+                                <i class="bi bi-save"></i>
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formateo automático de teléfono
+        const telefonoInput = document.getElementById('telefono');
+        if (telefonoInput) {
+            telefonoInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                
+                if (value.length > 10) {
+                    value = value.slice(0, 10);
+                }
+
+                // Formato: XX XXXX XXXX
+                if (value.length > 6) {
+                    value = value.substring(0, 2) + ' ' + value.substring(2, 6) + ' ' + value.substring(6);
+                } else if (value.length > 2) {
+                    value = value.substring(0, 2) + ' ' + value.substring(2);
+                }
+                
+                e.target.value = value;
+            });
+        }
+
+        // Formateo automático de código postal
+        const cpInput = document.getElementById('codigo_postal');
+        if (cpInput) {
+            cpInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                
+                if (value.length > 5) {
+                    value = value.slice(0, 5);
+                }
+                
+                e.target.value = value;
+            });
+        }
+
+        // Validación del formulario
+        const profileForm = document.getElementById('profileForm');
+        const saveButton = document.getElementById('saveButton');
+        
+        if (profileForm) {
+            profileForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                const requiredFields = this.querySelectorAll('[required]');
+                
+                // Resetear errores
+                this.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+                
+                this.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.remove();
+                });
+                
+                // Validar campos requeridos
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                        
+                        // Crear mensaje de error si no existe
+                        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            errorDiv.innerHTML = '<i class="bi bi-x-circle"></i> Este campo es obligatorio';
+                            field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                        }
+                    } else {
+                        field.classList.remove('is-invalid');
+                        field.classList.add('is-valid');
+                        
+                        // Remover mensaje de error si existe
+                        const errorMsg = field.nextElementSibling;
+                        if (errorMsg && errorMsg.classList.contains('invalid-feedback')) {
+                            errorMsg.remove();
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Mostrar mensaje de error general
+                    const toast = document.createElement('div');
+                    toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 animate__animated animate__fadeIn';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <div>Por favor, completa los campos obligatorios marcados en rojo.</div>
+                            <button type="button" class="btn-close ms-3" onclick="this.parentElement.remove()"></button>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 5000);
+                    
+                    // Scroll al primer error
+                    const firstError = this.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                } else {
+                    // Mostrar estado de carga
+                    saveButton.disabled = true;
+                    const originalHTML = saveButton.innerHTML;
+                    saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+                    
+                    // Simular retardo de guardado
+                    setTimeout(() => {
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = originalHTML;
+                    }, 2000);
+                }
+            });
+            
+            // Remover validación al escribir
+            const inputs = profileForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('is-invalid', 'is-valid');
+                    
+                    const errorMsg = this.nextElementSibling;
+                    if (errorMsg && errorMsg.classList.contains('invalid-feedback')) {
+                        errorMsg.remove();
+                    }
+                });
+            });
+        }
+        
+        // Navegación suave entre secciones
+        const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Actualizar navegación activa
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Scroll suave
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 140,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Animación de aparición de elementos
+        const revealItems = document.querySelectorAll('.reveal-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = entry.target.dataset.delay || '0s';
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealItems.forEach(item => observer.observe(item));
+        
+        // Efecto de hover en campos del formulario
+        const formControls = document.querySelectorAll('.form-control-profile');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            control.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Auto-guardado simulado (para demostración)
+        let autoSaveTimeout;
+        profileForm.addEventListener('input', function() {
+            clearTimeout(autoSaveTimeout);
+            
+            // Mostrar indicador de guardado automático
+            const saveIndicator = document.createElement('div');
+            saveIndicator.className = 'position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded-3 animate__animated animate__fadeInUp';
+            saveIndicator.style.zIndex = '9999';
+            saveIndicator.innerHTML = '<i class="bi bi-check-circle me-2"></i> Guardando cambios...';
+            document.body.appendChild(saveIndicator);
+            
+            autoSaveTimeout = setTimeout(() => {
+                if (saveIndicator.parentNode) {
+                    saveIndicator.classList.add('animate__fadeOutDown');
+                    setTimeout(() => {
+                        if (saveIndicator.parentNode) {
+                            saveIndicator.remove();
+                        }
+                    }, 300);
+                }
+            }, 1000);
+        });
+    });
+</script>
+{% endblock %}

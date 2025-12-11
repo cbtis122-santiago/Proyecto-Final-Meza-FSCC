@@ -1,0 +1,764 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Logo's Bookstore{% endblock %}</title>
+    
+    <!-- Meta tags premium -->
+    <meta name="description" content="Logo's Bookstore - La experiencia de lectura más refinada. Libros seleccionados con criterio de excelencia.">
+    <meta name="keywords" content="libros premium, literatura selecta, ediciones especiales, bookstore de lujo">
+    <meta name="author" content="Logo's Bookstore">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- Google Fonts Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Animate.css para animaciones suaves -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- CSS Base Minimalista Premium -->
+    <style>
+        /* ============================================
+           PALETA DE COLORES MINIMALISTA DE LUJO
+        ============================================ */
+        :root {
+            /* Neutros de lujo */
+            --ivory: #fffff0;
+            --linen: #faf0e6;
+            --pearl: #f8f8ff;
+            --seashell: #fff5ee;
+            --snow: #fffafa;
+            
+            /* Grises premium */
+            --platinum: #e5e4e2;
+            --silver: #c0c0c0;
+            --charcoal: #36454f;
+            --jet: #343434;
+            
+            /* Azules sutiles */
+            --crystal-blue: #f0f8ff;
+            --morning-blue: #8da399;
+            --steel-blue: #4682b4;
+            --navy-muted: #2c3e50;
+            
+            /* Acentos dorados/plateados */
+            --gold-leaf: #d4af37;
+            --pale-gold: #f5e8aa;
+            --silver-polish: #e8e8e8;
+            --bronze: #cd7f32;
+            
+            /* Sombras sutiles */
+            --shadow-soft: 0 2px 20px rgba(0, 0, 0, 0.04);
+            --shadow-medium: 0 5px 30px rgba(0, 0, 0, 0.08);
+            --shadow-floating: 0 15px 50px rgba(0, 0, 0, 0.1);
+            
+            /* Transiciones premium */
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        /* ============================================
+           RESET Y CONFIGURACIÓN BASE
+        ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+            color: var(--charcoal);
+            line-height: 1.8;
+            font-weight: 300;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Fondo texturizado sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(70, 130, 180, 0.02) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="200" height="200"><path d="M0 0h200v200H0z" fill="none"/><path d="M100 0v200M0 100h200" stroke="rgba(212, 175, 55, 0.02)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23subtlePattern)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* ============================================
+           TIPOGRAFÍA DE LUJO
+        ============================================ */
+        h1, h2, h3, h4, h5, h6, .display-font {
+            font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            font-weight: 400;
+            color: var(--jet);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-leaf), transparent);
+        }
+        
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300;
+            margin-bottom: 1.25rem;
+        }
+        
+        h3 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            opacity: 0.85;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: var(--navy-muted);
+            opacity: 0.9;
+        }
+        
+        .text-serif {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+        }
+        
+        /* ============================================
+           LAYOUT Y ESPACIADO
+        ============================================ */
+        .container, .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+        
+        main {
+            min-height: 80vh;
+            padding-top: 120px;
+            padding-bottom: 100px;
+        }
+        
+        /* Sistema de espaciado premium */
+        .section-spacing {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+        }
+        
+        .section-spacing-sm {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+        
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* ============================================
+           COMPONENTES MINIMALISTAS
+        ============================================ */
+        /* Cards */
+        .card-minimal {
+            background: var(--ivory);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-minimal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+        }
+        
+        .card-minimal:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-floating);
+        }
+        
+        /* Botones premium */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            border-radius: 50px;
+            padding: 0.875rem 2rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--steel-blue), var(--navy-muted));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(70, 130, 180, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--steel-blue);
+            color: var(--steel-blue);
+        }
+        
+        .btn-outline:hover {
+            background: var(--steel-blue);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+            color: white;
+        }
+        
+        /* Formularios */
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--platinum);
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            color: var(--charcoal);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: white;
+            border-color: var(--gold-leaf);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            outline: none;
+        }
+        
+        .form-control::placeholder {
+            color: var(--silver);
+            font-weight: 300;
+        }
+        
+        /* Cuando el body tiene la clase checkout-page, desactivar efectos */
+body.checkout-page {
+    background: #ffffff !important;
+    overflow: auto !important;
+}
+
+/* Desactivar el fondo texturizado en checkout */
+body.checkout-page::before {
+    display: none !important;
+    background: none !important;
+    content: none !important;
+}
+
+/* Desactivar backdrop-filter del navbar en checkout */
+body.checkout-page .navbar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+        /* ============================================
+           NAVBAR MINIMALISTA
+        ============================================ */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+        
+        .navbar.scrolled {
+            padding: 1rem 0;
+            box-shadow: var(--shadow-soft);
+            background: rgba(255, 255, 255, 0.98);
+        }
+        
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--jet);
+            position: relative;
+        }
+        
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 1px;
+            background: var(--gold-leaf);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-brand:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link {
+            color: var(--charcoal) !important;
+            font-weight: 300;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--gold-leaf);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::before {
+            width: 80%;
+        }
+        
+        .nav-link.active {
+            color: var(--gold-leaf) !important;
+        }
+        
+        /* ============================================
+           ANIMACIONES SUTILES
+        ============================================ */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .pulse-soft {
+            animation: pulse-soft 2s ease-in-out infinite;
+        }
+        
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ============================================
+           ELEMENTOS DECORATIVOS SUTILES
+        ============================================ */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--platinum), transparent);
+            margin: 3rem 0;
+        }
+        
+        .ornament {
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--gold-leaf);
+            position: relative;
+            opacity: 0.3;
+        }
+        
+        .ornament::before, .ornament::after {
+            content: '';
+            position: absolute;
+            background: var(--gold-leaf);
+        }
+        
+        .ornament::before {
+            width: 1px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .ornament::after {
+            width: 20px;
+            height: 1px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* ============================================
+           FOOTER MINIMALISTA
+        ============================================ */
+        .footer {
+            background: var(--ivory);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 4rem 0 2rem;
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+        }
+        
+        /* ============================================
+           UTILIDADES
+        ============================================ */
+        .text-gold {
+            color: var(--gold-leaf);
+        }
+        
+        .bg-ivory {
+            background: var(--ivory);
+        }
+        
+        .bg-linen {
+            background: var(--linen);
+        }
+        
+        .shadow-soft {
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .shadow-floating {
+            box-shadow: var(--shadow-floating);
+        }
+        
+        .rounded-elegant {
+            border-radius: 20px;
+        }
+        
+        .transition-smooth {
+            transition: var(--transition-smooth);
+        }
+        
+        /* ============================================
+           SCROLLBAR ELEGANTE
+        ============================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--pearl);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--gold-leaf), var(--bronze));
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--bronze), var(--gold-leaf));
+        }
+        
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 768px) {
+            main {
+                padding-top: 100px;
+                padding-bottom: 80px;
+            }
+            
+            .section-spacing {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            
+            .content-wrapper {
+                padding: 0 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .card-minimal {
+                padding: 2rem 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.5rem;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header y Navbar -->
+    {% include 'partials/navbar.html' %}
+    
+    <!-- Contenido Principal -->
+     <!--container-fluid px-0 -->
+     <!--si no funciona en la escuela activa el comando de arriba dentro del parentesis -->
+    <main class="">
+        {% block content %}
+        <!-- El contenido específico de cada página va aquí -->
+        {% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+    
+    <!-- Bootstrap 5 JS Bundle con Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JS Base -->
+    <script>
+        
+        // Inicialización cuando el DOM está listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de scroll en navbar
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+            
+            // Animación de elementos al hacer scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar elementos con clase 'reveal'
+            document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+            
+            // Cursor personalizado
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorRing = document.querySelector('.cursor-ring');
+            
+            if (cursorDot && cursorRing) {
+                document.addEventListener('mousemove', (e) => {
+                    cursorDot.style.left = e.clientX + 'px';
+                    cursorDot.style.top = e.clientY + 'px';
+                    
+                    setTimeout(() => {
+                        cursorRing.style.left = e.clientX + 'px';
+                        cursorRing.style.top = e.clientY + 'px';
+                    }, 100);
+                });
+                
+                // Efecto al hacer hover en elementos interactivos
+                const interactiveElements = document.querySelectorAll('a, button, .btn, [role="button"]');
+                interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursorDot.style.transform = 'scale(2)';
+                        cursorRing.style.transform = 'scale(1.5)';
+                    });
+                    
+                    el.addEventListener('mouseleave', () => {
+                        cursorDot.style.transform = 'scale(1)';
+                        cursorRing.style.transform = 'scale(1)';
+                    });
+                });
+            }
+            
+            // Smooth scroll para enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop - 100,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Efecto de aparición gradual para elementos
+            const fadeElements = document.querySelectorAll('.fade-in-element');
+            fadeElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('active');
+                }, index * 200);
+            });
+            
+            // Tooltips de Bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+        
+        // Función para mostrar/ocultar loading
+        window.showLoading = function() {
+            document.body.classList.add('loading');
+        }
+        
+        window.hideLoading = function() {
+            document.body.classList.remove('loading');
+        }
+        
+        // Efecto de partículas sutil
+        
+        
+        function createParticles() {
+            const colors = ['rgba(212, 175, 55, 0.1)', 'rgba(70, 130, 180, 0.1)', 'rgba(52, 58, 64, 0.1)'];
+            const container = document.querySelector('body');
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.width = Math.random() * 100 + 50 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = '50%';
+                particle.style.filter = 'blur(40px)';
+                particle.style.zIndex = '-1';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.opacity = '0';
+                
+                particle.animate([
+                    { opacity: 0, transform: 'scale(0)' },
+                    { opacity: 1, transform: 'scale(1)' },
+                    { opacity: 0, transform: 'scale(0)' }
+                ], {
+                    duration: Math.random() * 10000 + 10000,
+                    iterations: Infinity,
+                    delay: Math.random() * 5000
+                });
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // Crear partículas cuando la página esté cargada
+        window.addEventListener('load', createParticles);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,1081 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Producto - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE EDICIÓN DE PRODUCTO PREMIUM
+    ============================================ */
+    .edit-product-container {
+        min-height: 100vh;
+        padding: 140px 2rem 4rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .edit-product-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header de edición */
+    .edit-header {
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .edit-title {
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .edit-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    .edit-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    /* Tarjeta del formulario */
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 4rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    /* Sección de imagen */
+    .image-section {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid var(--platinum);
+    }
+    
+    .current-image {
+        width: 180px;
+        height: 240px;
+        margin: 0 auto 1.5rem;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+    }
+    
+    .current-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .current-image:hover img {
+        transform: scale(1.05);
+    }
+    
+    .image-upload {
+        position: relative;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    .upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border: 2px dashed var(--platinum);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+    
+    .upload-label:hover {
+        border-color: var(--gold-leaf);
+        background: linear-gradient(135deg, var(--linen), var(--ivory));
+        transform: translateY(-2px);
+    }
+    
+    .upload-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .upload-text {
+        text-align: center;
+    }
+    
+    .upload-text p {
+        margin: 0;
+        color: var(--charcoal);
+    }
+    
+    .upload-text .primary {
+        font-weight: 500;
+        color: var(--jet);
+    }
+    
+    .upload-text .secondary {
+        font-size: 0.9rem;
+        opacity: 0.7;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    /* Grid del formulario */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 0.25rem;
+    }
+    
+    /* Inputs */
+    .form-control-edit {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+    }
+    
+    .form-control-edit:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+    
+    textarea.form-control-edit {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* Select personalizado */
+    .custom-select {
+        position: relative;
+    }
+    
+    .custom-select select {
+        appearance: none;
+        padding-right: 3rem;
+    }
+    
+    .select-icon {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-leaf);
+        pointer-events: none;
+    }
+    
+    /* Switches personalizados */
+    .switch-group {
+        display: flex;
+        gap: 2rem;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border-radius: 16px;
+        border: 1px solid var(--platinum);
+    }
+    
+    .switch-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+    }
+    
+    .switch-label {
+        font-weight: 500;
+        color: var(--jet);
+        cursor: pointer;
+    }
+    
+    .switch-label .help-text {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 300;
+        color: var(--charcoal);
+        opacity: 0.7;
+        margin-top: 0.25rem;
+    }
+    
+    .custom-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+    }
+    
+    .custom-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--platinum);
+        transition: var(--transition-smooth);
+        border-radius: 34px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: var(--transition-smooth);
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(30px);
+    }
+    
+    /* Información de actualización */
+    .update-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 12px;
+        color: var(--steel-blue);
+        margin: 2rem 0;
+    }
+    
+    .update-info i {
+        font-size: 1.2rem;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        padding-top: 3rem;
+        border-top: 1px solid var(--platinum);
+    }
+    
+    .action-button {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        cursor: pointer;
+        min-width: 200px;
+        justify-content: center;
+    }
+    
+    .action-button-primary {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-button-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .action-button-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .action-button-secondary {
+        background: transparent;
+        border-color: var(--steel-blue);
+        color: var(--steel-blue);
+    }
+    
+    .action-button-secondary:hover {
+        background: var(--steel-blue);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-button-danger {
+        background: transparent;
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+    
+    .action-button-danger:hover {
+        background: #e74c3c;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Botón de volver */
+    .back-button {
+        padding: 0.875rem 1.75rem;
+        background: transparent;
+        border: 1px solid var(--charcoal);
+        border-radius: 50px;
+        color: var(--charcoal);
+        font-size: 0.95rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        margin-bottom: 2rem;
+    }
+    
+    .back-button:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Preview de imagen */
+    .image-preview {
+        display: none;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .preview-image {
+        width: 120px;
+        height: 160px;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 0 auto 0.5rem;
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .preview-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Decoraciones flotantes */
+    .floating-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-1 {
+        top: 20%;
+        right: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--steel-blue);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .edit-product-container {
+            padding: 120px 1.5rem 3rem;
+        }
+        
+        .form-card {
+            padding: 3rem;
+        }
+        
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .switch-group {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .action-button {
+            min-width: auto;
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .edit-product-container {
+            padding: 100px 1rem 2rem;
+        }
+        
+        .form-card {
+            padding: 2.5rem 2rem;
+        }
+        
+        .edit-title {
+            font-size: 1.8rem;
+        }
+        
+        .current-image {
+            width: 150px;
+            height: 200px;
+        }
+        
+        .upload-label {
+            padding: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .form-card {
+            padding: 2rem 1.5rem;
+        }
+        
+        .action-buttons {
+            gap: 0.75rem;
+        }
+        
+        .floating-decoration {
+            display: none;
+        }
+    }
+    
+    /* Animaciones */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .reveal-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Validación */
+    .is-invalid {
+        border-color: #e74c3c !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e74c3c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e74c3c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .invalid-feedback {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-product-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-decoration decoration-1"></div>
+    <div class="floating-decoration decoration-2"></div>
+    
+    <div class="edit-product-wrapper">
+        <!-- Botón de volver -->
+        <a href="{% url 'admin_productos' %}" class="back-button reveal-item">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver al listado</span>
+        </a>
+        
+        <!-- Header -->
+        <div class="edit-header reveal-item" style="animation-delay: 0.1s">
+            <h1 class="edit-title">Editar Producto</h1>
+            <p class="edit-subtitle">Actualiza los detalles de este libro en tu catálogo</p>
+        </div>
+        
+        <!-- Formulario -->
+        <div class="form-card reveal-item" style="animation-delay: 0.2s">
+            <form method="POST" enctype="multipart/form-data" id="editForm">
+                {% csrf_token %}
+                
+                <!-- Sección de imagen -->
+                <div class="image-section">
+                    {% if producto.imagen %}
+                    <div class="current-image">
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.titulo }}">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="image-upload">
+                        <label for="imageInput" class="upload-label">
+                            <div class="upload-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+                            <div class="upload-text">
+                                <p class="primary">Cambiar imagen del libro</p>
+                                <p class="secondary">Haz clic para seleccionar una nueva imagen</p>
+                            </div>
+                        </label>
+                        <input type="file" 
+                               class="file-input" 
+                               id="imageInput" 
+                               name="imagen" 
+                               accept="image/*">
+                        <div class="image-preview" id="imagePreview">
+                            <div class="preview-image">
+                                <img id="previewImage" alt="Vista previa">
+                            </div>
+                            <p class="secondary">Vista previa de la nueva imagen</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grid del formulario -->
+                <div class="form-grid">
+                    <!-- Título -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Título del libro
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control-edit" 
+                               name="titulo" 
+                               value="{{ producto.titulo }}" 
+                               required
+                               placeholder="Ingresa el título del libro">
+                    </div>
+                    
+                    <!-- Autor -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Autor
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control-edit" 
+                               name="autor" 
+                               value="{{ producto.autor }}" 
+                               required
+                               placeholder="Nombre completo del autor">
+                    </div>
+                    
+                    <!-- Precio -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Precio ($)
+                            <span class="required">*</span>
+                        </label>
+                        <input type="number" 
+                               step="0.01" 
+                               class="form-control-edit" 
+                               name="precio" 
+                               value="{{ producto.precio }}" 
+                               required
+                               placeholder="0.00">
+                    </div>
+                    
+                    <!-- Precio original -->
+                    <div class="form-group">
+                        <label class="form-label">Precio original ($)</label>
+                        <input type="number" 
+                               step="0.01" 
+                               class="form-control-edit" 
+                               name="precio_original" 
+                               value="{{ producto.precio_original|default:'' }}"
+                               placeholder="Precio anterior (opcional)">
+                    </div>
+                    
+                    <!-- Stock -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Stock
+                            <span class="required">*</span>
+                        </label>
+                        <input type="number" 
+                               class="form-control-edit" 
+                               name="stock" 
+                               value="{{ producto.stock }}" 
+                               required
+                               placeholder="Cantidad disponible">
+                    </div>
+                    
+                    <!-- Categoría -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Categoría
+                            <span class="required">*</span>
+                        </label>
+                        <div class="custom-select">
+                            <select class="form-control-edit" name="categoria" required>
+                                <option value="">Seleccionar categoría</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}" 
+                                        {% if producto.categoria.id == categoria.id %}selected{% endif %}>
+                                    {{ categoria.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <i class="bi bi-chevron-down select-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Condición -->
+                    <div class="form-group">
+                        <label class="form-label">Condición</label>
+                        <div class="custom-select">
+                            <select class="form-control-edit" name="condicion">
+                                <option value="nuevo" {% if producto.condicion == 'nuevo' %}selected{% endif %}>Nuevo</option>
+                                <option value="usado" {% if producto.condicion == 'usado' %}selected{% endif %}>Usado</option>
+                            </select>
+                            <i class="bi bi-chevron-down select-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- ISBN -->
+                    <div class="form-group">
+                        <label class="form-label">ISBN</label>
+                        <input type="text" 
+                               class="form-control-edit" 
+                               name="isbn" 
+                               value="{{ producto.isbn|default:'' }}"
+                               placeholder="Número ISBN (opcional)">
+                    </div>
+                    
+                    <!-- Editorial -->
+                    <div class="form-group">
+                        <label class="form-label">Editorial</label>
+                        <input type="text" 
+                               class="form-control-edit" 
+                               name="editorial" 
+                               value="{{ producto.editorial|default:'' }}"
+                               placeholder="Nombre de la editorial">
+                    </div>
+                    
+                    <!-- Descripción -->
+                    <div class="form-group full-width">
+                        <label class="form-label">
+                            Descripción
+                            <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control-edit" 
+                                  name="descripcion" 
+                                  rows="4" 
+                                  required
+                                  placeholder="Describe el libro...">{{ producto.descripcion }}</textarea>
+                    </div>
+                </div>
+                
+                <!-- Switches -->
+                <div class="switch-group">
+                    <div class="switch-item">
+                        <label class="custom-switch">
+                            <input type="checkbox" 
+                                   name="destacado" 
+                                   id="destacado"
+                                   {% if producto.destacado %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                        <div class="switch-label">
+                            Producto destacado
+                            <span class="help-text">Aparecerá en la sección de novedades</span>
+                        </div>
+                    </div>
+                    
+                    <div class="switch-item">
+                        <label class="custom-switch">
+                            <input type="checkbox" 
+                                   name="activo" 
+                                   id="activo"
+                                   {% if producto.activo %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                        <div class="switch-label">
+                            Producto activo
+                            <span class="help-text">Visible en la tienda</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Información de actualización -->
+                <div class="update-info">
+                    <i class="bi bi-clock-history"></i>
+                    <div>
+                        <strong>Última actualización:</strong>
+                        <p>{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</p>
+                    </div>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div class="action-buttons">
+                    <button type="submit" class="action-button action-button-primary" id="saveButton">
+                        <i class="bi bi-save"></i>
+                        <span>Guardar Cambios</span>
+                    </button>
+                    
+                    <a href="{% url 'eliminar_producto' producto.id %}" 
+                       class="action-button action-button-danger" 
+                       id="deleteButton">
+                        <i class="bi bi-trash"></i>
+                        <span>Eliminar Producto</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Observador para animaciones
+        const revealElements = document.querySelectorAll('.reveal-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Vista previa de imagen
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        
+        if (imageInput) {
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        
+                        // Animación de aparición
+                        imagePreview.style.opacity = '0';
+                        imagePreview.style.transform = 'translateY(20px)';
+                        
+                        setTimeout(() => {
+                            imagePreview.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                            imagePreview.style.opacity = '1';
+                            imagePreview.style.transform = 'translateY(0)';
+                        }, 10);
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    imagePreview.style.display = 'none';
+                }
+            });
+        }
+        
+        // Validación del formulario
+        const editForm = document.getElementById('editForm');
+        const saveButton = document.getElementById('saveButton');
+        
+        if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                const requiredFields = this.querySelectorAll('[required]');
+                
+                // Resetear errores
+                this.querySelectorAll('.is-invalid').forEach(el => {
+                    el.classList.remove('is-invalid');
+                });
+                
+                this.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.remove();
+                });
+                
+                // Validar campos requeridos
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                        
+                        // Crear mensaje de error si no existe
+                        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'invalid-feedback';
+                            errorDiv.innerHTML = '<i class="bi bi-x-circle"></i> Este campo es obligatorio';
+                            field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                        }
+                    } else {
+                        field.classList.remove('is-invalid');
+                        
+                        // Remover mensaje de error si existe
+                        const errorMsg = field.nextElementSibling;
+                        if (errorMsg && errorMsg.classList.contains('invalid-feedback')) {
+                            errorMsg.remove();
+                        }
+                    }
+                });
+                
+                // Validar precio
+                const priceField = this.querySelector('input[name="precio"]');
+                if (priceField && parseFloat(priceField.value) <= 0) {
+                    priceField.classList.add('is-invalid');
+                    isValid = false;
+                    
+                    if (!priceField.nextElementSibling || !priceField.nextElementSibling.classList.contains('invalid-feedback')) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        errorDiv.innerHTML = '<i class="bi bi-x-circle"></i> El precio debe ser mayor a 0';
+                        priceField.parentNode.insertBefore(errorDiv, priceField.nextSibling);
+                    }
+                }
+                
+                // Validar stock
+                const stockField = this.querySelector('input[name="stock"]');
+                if (stockField && parseInt(stockField.value) < 0) {
+                    stockField.classList.add('is-invalid');
+                    isValid = false;
+                    
+                    if (!stockField.nextElementSibling || !stockField.nextElementSibling.classList.contains('invalid-feedback')) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        errorDiv.innerHTML = '<i class="bi bi-x-circle"></i> El stock no puede ser negativo';
+                        stockField.parentNode.insertBefore(errorDiv, stockField.nextSibling);
+                    }
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Mostrar mensaje de error general
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed top-0 end-0 m-3 p-3 bg-danger text-white rounded-3 animate__animated animate__fadeInDown';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <div>Por favor, corrige los errores en el formulario.</div>
+                            <button type="button" class="btn-close btn-close-white ms-3" onclick="this.parentElement.remove()"></button>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 5000);
+                    
+                    // Scroll al primer error
+                    const firstError = this.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                } else {
+                    // Mostrar estado de carga
+                    saveButton.disabled = true;
+                    const originalHTML = saveButton.innerHTML;
+                    saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+                    
+                    // Simular retardo de guardado
+                    setTimeout(() => {
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = originalHTML;
+                    }, 2000);
+                }
+            });
+            
+            // Remover validación al escribir
+            const inputs = editForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                    
+                    const errorMsg = this.nextElementSibling;
+                    if (errorMsg && errorMsg.classList.contains('invalid-feedback')) {
+                        errorMsg.remove();
+                    }
+                });
+            });
+        }
+        
+        // Confirmación para eliminar
+        const deleteButton = document.getElementById('deleteButton');
+        if (deleteButton) {
+            deleteButton.addEventListener('click', function(e) {
+                if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        // Auto-guardado simulado (para demostración)
+        let autoSaveTimeout;
+        const autoSaveIndicator = document.createElement('div');
+        autoSaveIndicator.className = 'position-fixed bottom-0 start-0 m-3 p-3 bg-success text-white rounded-3 animate__animated animate__fadeInUp';
+        autoSaveIndicator.style.zIndex = '9999';
+        autoSaveIndicator.style.display = 'none';
+        autoSaveIndicator.innerHTML = '<i class="bi bi-check-circle me-2"></i> Cambios guardados automáticamente';
+        document.body.appendChild(autoSaveIndicator);
+        
+        editForm.addEventListener('input', function() {
+            clearTimeout(autoSaveTimeout);
+            
+            autoSaveTimeout = setTimeout(() => {
+                autoSaveIndicator.style.display = 'block';
+                setTimeout(() => {
+                    autoSaveIndicator.classList.add('animate__fadeOutDown');
+                    setTimeout(() => {
+                        autoSaveIndicator.style.display = 'none';
+                        autoSaveIndicator.classList.remove('animate__fadeOutDown');
+                    }, 300);
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Formateo automático de precio
+        const priceInput = editForm.querySelector('input[name="precio"]');
+        if (priceInput) {
+            priceInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    this.value = value.toFixed(2);
+                }
+            });
+        }
+        
+        // Contador de caracteres para descripción
+        const descriptionTextarea = editForm.querySelector('textarea[name="descripcion"]');
+        if (descriptionTextarea) {
+            const charCount = document.createElement('div');
+            charCount.className = 'text-end text-muted mt-1';
+            charCount.style.fontSize = '0.85rem';
+            charCount.innerHTML = `<span id="charCount">${descriptionTextarea.value.length}</span> caracteres`;
+            descriptionTextarea.parentNode.appendChild(charCount);
+            
+            descriptionTextarea.addEventListener('input', function() {
+                document.getElementById('charCount').textContent = this.value.length;
+            });
+        }
+        
+        // Efecto de enfoque en campos
+        const formControls = editForm.querySelectorAll('.form-control-edit');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            control.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+{% endblock %}

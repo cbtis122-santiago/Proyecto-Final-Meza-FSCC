@@ -1,0 +1,731 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Producto - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       PÁGINA DE CONFIRMACIÓN DE ELIMINACIÓN PREMIUM
+    ============================================ */
+    .delete-confirmation-container {
+        min-height: 100vh;
+        padding: 140px 2rem 4rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .delete-confirmation-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        width: 100%;
+    }
+    
+    /* Tarjeta de confirmación */
+    .confirmation-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 4rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        text-align: center;
+    }
+    
+    .confirmation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e74c3c, transparent);
+    }
+    
+    /* Ícono de advertencia */
+    .warning-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        position: relative;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .warning-icon::after {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border: 2px solid rgba(231, 76, 60, 0.2);
+        border-radius: 50%;
+        animation: ripple 2s ease-out infinite;
+    }
+    
+    @keyframes ripple {
+        0% { transform: scale(0.8); opacity: 1; }
+        100% { transform: scale(1.3); opacity: 0; }
+    }
+    
+    /* Títulos */
+    .confirmation-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .confirmation-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        margin-bottom: 3rem;
+        letter-spacing: 1px;
+    }
+    
+    /* Tarjeta del producto */
+    .product-card {
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 2.5rem 0;
+        border: 1px solid var(--platinum);
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition-smooth);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-floating);
+    }
+    
+    .product-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--gold-leaf), var(--bronze));
+    }
+    
+    .product-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--jet);
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+    
+    .product-author {
+        font-size: 1.1rem;
+        color: var(--charcoal);
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+    
+    .product-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        color: var(--charcoal);
+    }
+    
+    .meta-item i {
+        color: var(--gold-leaf);
+    }
+    
+    .price-tag {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-active {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+    }
+    
+    .status-inactive {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    
+    /* Advertencia */
+    .warning-box {
+        background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.05));
+        border: 1px solid rgba(231, 76, 60, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2.5rem 0;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .warning-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    }
+    
+    .warning-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .warning-icon-small {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .warning-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #c0392b;
+    }
+    
+    .warning-content {
+        color: var(--charcoal);
+        line-height: 1.6;
+        margin-left: 3.5rem;
+    }
+    
+    .warning-content ul {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+    
+    .warning-content li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    
+    .warning-content li::marker {
+        color: #e74c3c;
+    }
+    
+    /* Botones de acción */
+    .confirmation-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+    
+    .confirmation-button {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        cursor: pointer;
+        min-width: 200px;
+        justify-content: center;
+    }
+    
+    .confirmation-button-danger {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .confirmation-button-danger::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .confirmation-button-danger:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .confirmation-button-secondary {
+        background: transparent;
+        border-color: var(--charcoal);
+        color: var(--charcoal);
+    }
+    
+    .confirmation-button-secondary:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Decoraciones */
+    .floating-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-1 {
+        top: 20%;
+        left: 10%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, #e74c3c 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-2 {
+        bottom: 20%;
+        right: 10%;
+        width: 80px;
+        height: 80px;
+        border: 2px solid var(--charcoal);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    /* Botón de volver */
+    .back-button {
+        padding: 0.875rem 1.75rem;
+        background: transparent;
+        border: 1px solid var(--charcoal);
+        border-radius: 50px;
+        color: var(--charcoal);
+        font-size: 0.95rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        margin-bottom: 2rem;
+        position: absolute;
+        top: 2rem;
+        left: 0;
+    }
+    
+    .back-button:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Animaciones */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .reveal-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .delete-confirmation-container {
+            padding: 120px 1.5rem 3rem;
+        }
+        
+        .confirmation-card {
+            padding: 3rem 2.5rem;
+        }
+        
+        .confirmation-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .confirmation-button {
+            min-width: auto;
+            width: 100%;
+        }
+        
+        .back-button {
+            position: relative;
+            top: 0;
+            left: 0;
+            margin-bottom: 2rem;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .product-card {
+            padding: 2rem;
+        }
+        
+        .product-meta {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .delete-confirmation-container {
+            padding: 100px 1rem 2rem;
+        }
+        
+        .confirmation-card {
+            padding: 2.5rem 2rem;
+        }
+        
+        .confirmation-title {
+            font-size: 1.8rem;
+        }
+        
+        .warning-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+        }
+        
+        .floating-decoration {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-decoration decoration-1"></div>
+    <div class="floating-decoration decoration-2"></div>
+    
+    <div class="delete-confirmation-wrapper">
+        <!-- Botón de volver -->
+        <a href="{% url 'admin_productos' %}" class="back-button reveal-item">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver al listado</span>
+        </a>
+        
+        <!-- Tarjeta de confirmación -->
+        <div class="confirmation-card reveal-item" style="animation-delay: 0.1s">
+            <!-- Ícono de advertencia -->
+            <div class="warning-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            
+            <!-- Títulos -->
+            <h1 class="confirmation-title">Confirmar Eliminación</h1>
+            <p class="confirmation-subtitle">Esta acción no se puede deshacer</p>
+            
+            <!-- Información del producto -->
+            <div class="product-card reveal-item" style="animation-delay: 0.2s">
+                <h3 class="product-title">{{ producto.titulo }}</h3>
+                <p class="product-author">por {{ producto.autor }}</p>
+                
+                <div class="price-tag">
+                    <i class="bi bi-tag"></i>
+                    ${{ producto.precio }}
+                </div>
+                
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <i class="bi bi-bookmark"></i>
+                        {{ producto.categoria.nombre }}
+                    </div>
+                    
+                    <div class="meta-item">
+                        <i class="bi bi-box"></i>
+                        Stock: {{ producto.stock }} unidades
+                    </div>
+                    
+                    <div class="status-badge {% if producto.activo %}status-active{% else %}status-inactive{% endif %}">
+                        <i class="bi bi-{% if producto.activo %}check-circle{% else %}x-circle{% endif %} me-1"></i>
+                        {% if producto.activo %}Activo{% else %}Inactivo{% endif %}
+                    </div>
+                    
+                    {% if producto.destacado %}
+                    <div class="meta-item" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05)); color: var(--bronze);">
+                        <i class="bi bi-star-fill" style="color: var(--gold-leaf);"></i>
+                        Producto destacado
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Advertencia -->
+            <div class="warning-box reveal-item" style="animation-delay: 0.3s">
+                <div class="warning-header">
+                    <div class="warning-icon-small">
+                        <i class="bi bi-exclamation-octagon"></i>
+                    </div>
+                    <h4 class="warning-title">Advertencia crítica</h4>
+                </div>
+                
+                <div class="warning-content">
+                    <p>Estás a punto de eliminar este producto de manera permanente. Por favor, considera las siguientes consecuencias:</p>
+                    
+                    <ul>
+                        <li>El producto será marcado como <strong>inactivo</strong> y desaparecerá de la tienda</li>
+                        <li>Los usuarios no podrán ver ni comprar este producto</li>
+                        <li>Los datos del producto se mantendrán en el sistema para registro histórico</li>
+                        <li>Si existen pedidos pendientes con este producto, deberás gestionarlos manualmente</li>
+                    </ul>
+                    
+                    <p class="mb-0"><strong>Nota:</strong> Esta acción es reversible solo contactando al administrador del sistema.</p>
+                </div>
+            </div>
+            
+            <!-- Formulario de confirmación -->
+            <form method="POST" id="deleteForm">
+                {% csrf_token %}
+                
+                <div class="confirmation-buttons reveal-item" style="animation-delay: 0.4s">
+                    <button type="submit" class="confirmation-button confirmation-button-danger" id="deleteButton">
+                        <i class="bi bi-trash"></i>
+                        <span>Confirmar Eliminación</span>
+                    </button>
+                    
+                    <a href="{% url 'admin_productos' %}" class="confirmation-button confirmation-button-secondary">
+                        <i class="bi bi-x-circle"></i>
+                        <span>Cancelar</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Observador para animaciones
+        const revealElements = document.querySelectorAll('.reveal-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Confirmación de eliminación con verificación adicional
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteButton = document.getElementById('deleteButton');
+        
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar diálogo de confirmación personalizado
+                const modal = document.createElement('div');
+                modal.className = 'position-fixed top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center';
+                modal.style.zIndex = '9999';
+                modal.style.background = 'rgba(0, 0, 0, 0.7)';
+                modal.style.backdropFilter = 'blur(10px)';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-4 p-5 shadow-lg" style="max-width: 500px; width: 90%;">
+                        <div class="text-center mb-4">
+                            <div class="warning-icon" style="width: 80px; height: 80px; font-size: 2.5rem; margin: 0 auto 1.5rem;">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="fw-bold text-danger mb-3">¿Estás absolutamente seguro?</h3>
+                        </div>
+                        
+                        <div class="alert alert-danger mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-shield-exclamation fs-4 me-3 mt-1"></i>
+                                <div>
+                                    <strong>Acción irreversible:</strong> Esta es la última oportunidad para cancelar. Una vez confirmado, el producto será eliminado permanentemente.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Para confirmar, escribe <code>ELIMINAR {{ producto.titulo|slice:":20" }}</code></label>
+                            <input type="text" class="form-control" id="confirmationInput" placeholder="Escribe exactamente como se muestra arriba">
+                            <div class="form-text">Esta medida de seguridad previene eliminaciones accidentales.</div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 justify-content-center">
+                            <button type="button" class="btn btn-danger px-4" id="finalConfirm">
+                                <i class="bi bi-check-circle me-2"></i>Confirmar Eliminación
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary px-4" id="cancelDelete">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                document.body.style.overflow = 'hidden';
+                
+                // Enfocar el input de confirmación
+                const confirmationInput = document.getElementById('confirmationInput');
+                confirmationInput.focus();
+                
+                // Configurar botón de confirmación final
+                const finalConfirm = document.getElementById('finalConfirm');
+                finalConfirm.disabled = true;
+                
+                confirmationInput.addEventListener('input', function() {
+                    const expectedText = `ELIMINAR ${'{{ producto.titulo|slice:":20" }}'}`;
+                    finalConfirm.disabled = this.value !== expectedText;
+                    
+                    if (this.value === expectedText) {
+                        confirmationInput.classList.remove('is-invalid');
+                        confirmationInput.classList.add('is-valid');
+                    } else {
+                        confirmationInput.classList.remove('is-valid');
+                        confirmationInput.classList.add('is-invalid');
+                    }
+                });
+                
+                // Confirmar eliminación
+                finalConfirm.addEventListener('click', function() {
+                    if (!finalConfirm.disabled) {
+                        // Mostrar estado de eliminación
+                        deleteButton.disabled = true;
+                        deleteButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Eliminando...';
+                        
+                        // Cerrar modal
+                        document.body.removeChild(modal);
+                        document.body.style.overflow = 'auto';
+                        
+                        // Enviar formulario
+                        deleteForm.submit();
+                    }
+                });
+                
+                // Cancelar eliminación
+                const cancelDelete = document.getElementById('cancelDelete');
+                cancelDelete.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                    document.body.style.overflow = 'auto';
+                    
+                    // Mostrar mensaje de cancelación
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed top-0 end-0 m-3 p-3 bg-success text-white rounded-3';
+                    toast.style.zIndex = '9999';
+                    toast.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <div>Eliminación cancelada. El producto está a salvo.</div>
+                            <button type="button" class="btn-close btn-close-white ms-3" onclick="this.parentElement.remove()"></button>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 3000);
+                });
+                
+                // Cerrar modal al hacer clic fuera
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+        }
+        
+        // Efecto de temblor en el botón de eliminar al pasar el mouse
+        if (deleteButton) {
+            deleteButton.addEventListener('mouseenter', function() {
+                this.style.animation = 'shake 0.5s ease-in-out';
+            });
+            
+            deleteButton.addEventListener('animationend', function() {
+                this.style.animation = '';
+            });
+        }
+        
+        // Añadir estilo de animación de temblor
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}

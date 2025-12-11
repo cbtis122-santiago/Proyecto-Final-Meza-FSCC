@@ -1,0 +1,953 @@
+{% extends 'base.html' %}
+
+{% block title %}Contacto - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       PÁGINA DE CONTACTO PREMIUM MINIMALISTA
+    ============================================ */
+    .contact-hero {
+        min-height: 100vh;
+        padding: 160px 2rem 6rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+        display: flex;
+        align-items: center;
+    }
+    
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header */
+    .contact-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+    }
+    
+    .contact-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .contact-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .contact-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.4rem;
+        color: var(--charcoal);
+        opacity: 0.8;
+        font-style: italic;
+        letter-spacing: 1px;
+        max-width: 600px;
+        margin: 2rem auto;
+        line-height: 1.6;
+    }
+    
+    /* Grid de contenido */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+    
+    /* Tarjeta del formulario */
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        height: fit-content;
+    }
+    
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    /* Tarjeta de información */
+    .info-card {
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        height: fit-content;
+    }
+    
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--gold-leaf), var(--bronze));
+    }
+    
+    /* Títulos de sección */
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    /* Campos del formulario */
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 0.25rem;
+    }
+    
+    .form-control-contact {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+        font-family: inherit;
+    }
+    
+    .form-control-contact:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+    
+    textarea.form-control-contact {
+        min-height: 150px;
+        resize: vertical;
+    }
+    
+    /* Información de contacto */
+    .contact-info {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+    }
+    
+    .contact-item:hover {
+        background: white;
+        transform: translateY(-5px);
+        border-color: var(--gold-leaf);
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    
+    .contact-details {
+        flex: 1;
+    }
+    
+    .contact-details h4 {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--jet);
+        margin-bottom: 0.5rem;
+    }
+    
+    .contact-details p {
+        color: var(--charcoal);
+        opacity: 0.8;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* Botón de envío */
+    .submit-button {
+        padding: 1rem 3rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    
+    .submit-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .submit-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .submit-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Mapa */
+    .map-container {
+        margin-top: 3rem;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+        height: 300px;
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .map-placeholder {
+        text-align: center;
+        padding: 2rem;
+        color: var(--charcoal);
+    }
+    
+    .map-placeholder i {
+        font-size: 4rem;
+        color: var(--gold-leaf);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    /* Horario de atención */
+    .hours-section {
+        margin-top: 3rem;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+        border: 1px solid var(--platinum);
+    }
+    
+    .hours-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--jet);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .hours-title i {
+        color: var(--gold-leaf);
+    }
+    
+    .hours-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .hour-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .hour-item:last-child {
+        border-bottom: none;
+    }
+    
+    .day {
+        color: var(--charcoal);
+        font-weight: 500;
+    }
+    
+    .time {
+        color: var(--charcoal);
+        opacity: 0.8;
+    }
+    
+    /* Redes sociales */
+    .social-section {
+        margin-top: 3rem;
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid var(--platinum);
+    }
+    
+    .social-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--jet);
+        margin-bottom: 1.5rem;
+    }
+    
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .social-link {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--charcoal);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+        border: 1px solid var(--platinum);
+    }
+    
+    .social-link:hover {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        transform: translateY(-5px);
+        border-color: transparent;
+    }
+    
+    /* Decoraciones */
+    .contact-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-1 {
+        top: 20%;
+        left: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-2 {
+        bottom: 20%;
+        right: 5%;
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--steel-blue);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    /* Animaciones */
+    .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .contact-hero {
+            padding: 140px 1.5rem 4rem;
+        }
+        
+        .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        
+        .form-card,
+        .info-card {
+            padding: 2.5rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 120px 1rem 3rem;
+        }
+        
+        .contact-title {
+            font-size: 2rem;
+        }
+        
+        .contact-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .form-card,
+        .info-card {
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .contact-decoration {
+            display: none;
+        }
+        
+        .hours-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .form-card,
+        .info-card {
+            padding: 1.5rem;
+        }
+        
+        .contact-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .contact-icon {
+            margin: 0 auto;
+        }
+        
+        .submit-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    /* Validación */
+    .is-invalid-contact {
+        border-color: #e74c3c !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e74c3c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e74c3c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .invalid-feedback-contact {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-hero">
+    <!-- Decoraciones flotantes -->
+    <div class="contact-decoration decoration-1"></div>
+    <div class="contact-decoration decoration-2"></div>
+    
+    <div class="contact-container">
+        <!-- Header -->
+        <div class="contact-header fade-up">
+            <h1 class="contact-title">Contáctanos</h1>
+            <p class="contact-subtitle">
+                ¿Tienes alguna pregunta o comentario? Nos encantaría saber de ti. 
+                Rellena el siguiente formulario y nos pondremos en contacto contigo lo antes posible.
+            </p>
+        </div>
+        
+        <!-- Grid de contenido -->
+        <div class="contact-grid">
+            <!-- Formulario de contacto -->
+            <div class="form-card fade-up" style="transition-delay: 0.1s">
+                <h2 class="section-title">Envíanos un Mensaje</h2>
+                
+                <form id="contactForm" method="POST" action="{% url 'contacto' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Nombre Completo
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               class="form-control-contact" 
+                               id="name" 
+                               name="name"
+                               required
+                               placeholder="Ingresa tu nombre completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Correo Electrónico
+                            <span class="required">*</span>
+                        </label>
+                        <input type="email" 
+                               class="form-control-contact" 
+                               id="email" 
+                               name="email"
+                               required
+                               placeholder="ejemplo@correo.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Asunto
+                        </label>
+                        <input type="text" 
+                               class="form-control-contact" 
+                               id="subject" 
+                               name="subject"
+                               placeholder="¿Sobre qué quieres hablar?">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Mensaje
+                            <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control-contact" 
+                                  id="message" 
+                                  name="message"
+                                  rows="6" 
+                                  required
+                                  placeholder="Escribe tu mensaje aquí..."></textarea>
+                        <div class="text-end mt-1">
+                            <span id="messageCount">0</span>/1000 caracteres
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-button" id="submitButton">
+                        <i class="bi bi-send me-2"></i>
+                        <span>Enviar Mensaje</span>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Información de contacto -->
+            <div class="info-card fade-up" style="transition-delay: 0.2s">
+                <h2 class="section-title">Información de Contacto</h2>
+                
+                <ul class="contact-info">
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Dirección</h4>
+                            <p>Av. Libros 123, Ciudad Literaria<br>CP 12345, Estado de México</p>
+                        </div>
+                    </li>
+                    
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Teléfono</h4>
+                            <p>(52) 1234-5678<br>Lunes a Viernes: 9:00 AM - 7:00 PM</p>
+                        </div>
+                    </li>
+                    
+                    <li class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Correo Electrónico</h4>
+                            <p>info@logosbookstore.com<br>contacto@logosbookstore.com</p>
+                        </div>
+                    </li>
+                </ul>
+                
+                <!-- Horario de atención -->
+                <div class="hours-section fade-up" style="transition-delay: 0.3s">
+                    <h3 class="hours-title">
+                        <i class="bi bi-clock"></i>
+                        Horario de Atención
+                    </h3>
+                    <div class="hours-grid">
+                        <div class="hour-item">
+                            <span class="day">Lunes - Viernes</span>
+                            <span class="time">9:00 AM - 8:00 PM</span>
+                        </div>
+                        <div class="hour-item">
+                            <span class="day">Sábados</span>
+                            <span class="time">10:00 AM - 6:00 PM</span>
+                        </div>
+                        <div class="hour-item">
+                            <span class="day">Domingos</span>
+                            <span class="time">11:00 AM - 4:00 PM</span>
+                        </div>
+                        <div class="hour-item">
+                            <span class="day">Festivos</span>
+                            <span class="time">Consulta nuestro sitio web</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mapa -->
+                <div class="map-container fade-up" style="transition-delay: 0.4s">
+                    <div class="map-placeholder">
+                        <i class="bi bi-geo-alt"></i>
+                        <h4>Nuestra Ubicación</h4>
+                        <p>Av. Libros 123, Ciudad Literaria</p>
+                        <small class="text-muted">Mapa disponible próximamente</small>
+                    </div>
+                </div>
+                
+                <!-- Redes sociales -->
+                <div class="social-section fade-up" style="transition-delay: 0.5s">
+                    <h3 class="social-title">Síguenos en Redes Sociales</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animación de aparición al hacer scroll
+        const fadeElements = document.querySelectorAll('.fade-up');
+        
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(el => fadeObserver.observe(el));
+        
+        // Contador de caracteres para el mensaje
+        const messageTextarea = document.getElementById('message');
+        const messageCount = document.getElementById('messageCount');
+        
+        if (messageTextarea && messageCount) {
+            messageTextarea.addEventListener('input', function() {
+                messageCount.textContent = this.value.length;
+                
+                // Cambiar color si se acerca al límite
+                if (this.value.length > 900) {
+                    messageCount.style.color = '#e74c3c';
+                } else if (this.value.length > 800) {
+                    messageCount.style.color = '#f39c12';
+                } else {
+                    messageCount.style.color = 'inherit';
+                }
+                
+                // Limitar a 1000 caracteres
+                if (this.value.length > 1000) {
+                    this.value = this.value.substring(0, 1000);
+                    messageCount.textContent = 1000;
+                }
+            });
+        }
+        
+        // Validación del formulario
+        const contactForm = document.getElementById('contactForm');
+        const submitButton = document.getElementById('submitButton');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // Resetear errores
+                this.querySelectorAll('.is-invalid-contact').forEach(el => {
+                    el.classList.remove('is-invalid-contact');
+                });
+                
+                this.querySelectorAll('.invalid-feedback-contact').forEach(el => {
+                    el.remove();
+                });
+                
+                // Validar campos requeridos
+                const requiredFields = [
+                    { id: 'name', name: 'nombre' },
+                    { id: 'email', name: 'correo electrónico' },
+                    { id: 'message', name: 'mensaje' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    if (!element.value.trim()) {
+                        markInvalid(element, `El ${field.name} es obligatorio`);
+                        isValid = false;
+                    } else if (field.id === 'email') {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(element.value)) {
+                            markInvalid(element, 'Por favor, ingresa un correo electrónico válido');
+                            isValid = false;
+                        }
+                    } else if (field.id === 'message' && element.value.length < 10) {
+                        markInvalid(element, 'El mensaje debe tener al menos 10 caracteres');
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    // Mostrar mensaje de error general
+                    showToast('Por favor, corrige los errores en el formulario', 'danger');
+                    
+                    // Scroll al primer error
+                    const firstError = this.querySelector('.is-invalid-contact');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                } else {
+                    // Mostrar estado de carga
+                    submitButton.disabled = true;
+                    const originalHTML = submitButton.innerHTML;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+                    
+                    // Simular envío (en una implementación real, aquí iría el fetch o ajax)
+                    setTimeout(() => {
+                        // Mostrar mensaje de éxito
+                        showToast('¡Mensaje enviado con éxito! Te contactaremos pronto.', 'success');
+                        
+                        // Resetear formulario
+                        contactForm.reset();
+                        if (messageCount) {
+                            messageCount.textContent = '0';
+                            messageCount.style.color = 'inherit';
+                        }
+                        
+                        // Restaurar botón
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalHTML;
+                    }, 2000);
+                }
+            });
+            
+            function markInvalid(element, message) {
+                element.classList.add('is-invalid-contact');
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback-contact';
+                errorDiv.innerHTML = `<i class="bi bi-x-circle"></i> ${message}`;
+                element.parentNode.insertBefore(errorDiv, element.nextSibling);
+            }
+        }
+        
+        // Función para mostrar toasts
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `position-fixed top-0 end-0 m-3 p-3 rounded-3 animate__animated animate__fadeInDown`;
+            toast.style.zIndex = '9999';
+            
+            let bgColor = 'bg-primary';
+            if (type === 'danger') bgColor = 'bg-danger';
+            if (type === 'success') bgColor = 'bg-success';
+            if (type === 'warning') bgColor = 'bg-warning';
+            if (type === 'info') bgColor = 'bg-info';
+            
+            toast.className += ` ${bgColor} text-white`;
+            
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi ${type === 'danger' ? 'bi-exclamation-triangle' : type === 'success' ? 'bi-check-circle' : 'bi-info-circle'} me-2"></i>
+                    <div>${message}</div>
+                    <button type="button" class="btn-close btn-close-white ms-3" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('animate__fadeOutDown');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+        
+        // Efecto de enfoque en campos del formulario
+        const formControls = contactForm.querySelectorAll('.form-control-contact');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            control.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Efecto de hover en tarjetas de información
+        const contactItems = document.querySelectorAll('.contact-item');
+        contactItems.forEach(item => {
+            const icon = item.querySelector('.contact-icon i');
+            
+            item.addEventListener('mouseenter', function() {
+                if (icon) {
+                    icon.style.transition = 'transform 0.6s ease';
+                    icon.style.transform = 'scale(1.2) rotate(10deg)';
+                }
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                if (icon) {
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                }
+            });
+        });
+        
+        // Validación en tiempo real
+        const inputs = contactForm.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid-contact');
+                
+                const errorMsg = this.nextElementSibling;
+                if (errorMsg && errorMsg.classList.contains('invalid-feedback-contact')) {
+                    errorMsg.remove();
+                }
+            });
+        });
+        
+        // Auto-completar para nombre y email (si están guardados en localStorage)
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        
+        if (nameInput && localStorage.getItem('contactName')) {
+            nameInput.value = localStorage.getItem('contactName');
+        }
+        
+        if (emailInput && localStorage.getItem('contactEmail')) {
+            emailInput.value = localStorage.getItem('contactEmail');
+        }
+        
+        // Guardar en localStorage al enviar (solo para demo)
+        contactForm.addEventListener('submit', function() {
+            if (nameInput && nameInput.value) {
+                localStorage.setItem('contactName', nameInput.value);
+            }
+            if (emailInput && emailInput.value) {
+                localStorage.setItem('contactEmail', emailInput.value);
+            }
+        });
+    });
+</script>
+{% endblock %}

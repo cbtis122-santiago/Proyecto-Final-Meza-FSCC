@@ -1,0 +1,1548 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Producto - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       PÁGINA DE AGREGAR PRODUCTO PREMIUM
+    ============================================ */
+    .add-product-container {
+        min-height: 100vh;
+        padding: 140px 2rem 4rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .add-product-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header */
+    .add-header {
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .add-title {
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .add-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    .add-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    /* Tarjeta del formulario */
+    .form-card-add {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 4rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-card-add::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    /* Indicador de progreso */
+    .form-progress {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--platinum);
+        position: relative;
+    }
+    
+    .progress-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 1rem;
+        background: var(--ivory);
+        border: 2px solid var(--platinum);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--charcoal);
+        font-weight: 500;
+        transition: var(--transition-smooth);
+    }
+    
+    .progress-step.active .step-number {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-color: var(--gold-leaf);
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .step-label {
+        font-size: 0.9rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .progress-step.active .step-label {
+        color: var(--jet);
+        font-weight: 500;
+    }
+    
+    .progress-line {
+        position: absolute;
+        top: 20px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: var(--platinum);
+        z-index: 1;
+    }
+    
+    /* Secciones del formulario */
+    .form-section {
+        display: none;
+        animation: fadeIn 0.6s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section.active {
+        display: block;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--platinum);
+        position: relative;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    /* Grid del formulario */
+    .form-grid-add {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group-add {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group-add.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .form-label-add {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-label-add .required {
+        color: #e74c3c;
+        margin-left: 0.25rem;
+    }
+    
+    /* Inputs */
+    .form-control-add {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+    }
+    
+    .form-control-add:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+    
+    textarea.form-control-add {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* Select personalizado */
+    .custom-select-add {
+        position: relative;
+    }
+    
+    .custom-select-add select {
+        appearance: none;
+        padding-right: 3rem;
+    }
+    
+    .select-icon-add {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-leaf);
+        pointer-events: none;
+    }
+    
+    /* Carga de imágenes */
+    .image-upload-add {
+        margin: 2rem 0;
+    }
+    
+    .upload-area {
+        border: 3px dashed var(--platinum);
+        border-radius: 16px;
+        padding: 3rem;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+    }
+    
+    .upload-area:hover {
+        border-color: var(--gold-leaf);
+        background: linear-gradient(135deg, var(--linen), var(--ivory));
+        transform: translateY(-2px);
+    }
+    
+    .upload-area.drag-over {
+        border-color: var(--gold-leaf);
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+    }
+    
+    .upload-icon-large {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+    }
+    
+    .upload-text-large {
+        margin-bottom: 1rem;
+    }
+    
+    .upload-text-large .primary {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--jet);
+        margin-bottom: 0.5rem;
+    }
+    
+    .upload-text-large .secondary {
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-size: 0.9rem;
+    }
+    
+    .file-input-add {
+        display: none;
+    }
+    
+    /* Vista previa de imagen */
+    .image-preview-add {
+        display: none;
+        margin-top: 2rem;
+        text-align: center;
+        animation: fadeIn 0.6s ease;
+    }
+    
+    .preview-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .preview-image-add {
+        width: 200px;
+        height: 280px;
+        margin: 0 auto 1rem;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-floating);
+    }
+    
+    .preview-image-add img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .preview-info {
+        margin-top: 1rem;
+    }
+    
+    .preview-info p {
+        margin: 0.5rem 0;
+        color: var(--charcoal);
+        font-size: 0.9rem;
+    }
+    
+    /* Switches */
+    .switch-group-add {
+        display: flex;
+        gap: 2rem;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border-radius: 16px;
+        border: 1px solid var(--platinum);
+    }
+    
+    .switch-item-add {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+    }
+    
+    .switch-label-add {
+        font-weight: 500;
+        color: var(--jet);
+        cursor: pointer;
+    }
+    
+    .switch-label-add .help-text {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 300;
+        color: var(--charcoal);
+        opacity: 0.7;
+        margin-top: 0.25rem;
+    }
+    
+    .custom-switch-add {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+    }
+    
+    .custom-switch-add input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider-add {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--platinum);
+        transition: var(--transition-smooth);
+        border-radius: 34px;
+    }
+    
+    .slider-add:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: var(--transition-smooth);
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider-add {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+    }
+    
+    input:checked + .slider-add:before {
+        transform: translateX(30px);
+    }
+    
+    /* Botones de navegación */
+    .form-navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding-top: 3rem;
+        border-top: 1px solid var(--platinum);
+    }
+    
+    .nav-button {
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        cursor: pointer;
+        min-width: 150px;
+        justify-content: center;
+    }
+    
+    .nav-button-prev {
+        background: transparent;
+        border-color: var(--charcoal);
+        color: var(--charcoal);
+    }
+    
+    .nav-button-prev:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .nav-button-next {
+        background: linear-gradient(135deg, var(--steel-blue), var(--crystal-blue));
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-button-next::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .nav-button-next:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .nav-button-submit {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+    }
+    
+    .nav-button-submit::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .nav-button-submit:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    /* Botón de volver */
+    .back-button-add {
+        padding: 0.875rem 1.75rem;
+        background: transparent;
+        border: 1px solid var(--charcoal);
+        border-radius: 50px;
+        color: var(--charcoal);
+        font-size: 0.95rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        margin-bottom: 2rem;
+    }
+    
+    .back-button-add:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Información de ayuda */
+    .help-box {
+        background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05));
+        border: 1px solid rgba(52, 152, 219, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .help-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--steel-blue), var(--crystal-blue));
+    }
+    
+    .help-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .help-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--steel-blue), var(--crystal-blue));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .help-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--steel-blue);
+    }
+    
+    .help-content {
+        color: var(--charcoal);
+        line-height: 1.6;
+        margin-left: 3.5rem;
+    }
+    
+    /* Decoraciones flotantes */
+    .floating-decoration-add {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-add-1 {
+        top: 20%;
+        right: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-add-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--steel-blue);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    /* Validación */
+    .is-invalid-add {
+        border-color: #e74c3c !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23e74c3c'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e74c3c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .invalid-feedback-add {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Animaciones */
+    .reveal-item-add {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .reveal-item-add.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .add-product-container {
+            padding: 120px 1.5rem 3rem;
+        }
+        
+        .form-card-add {
+            padding: 3rem;
+        }
+        
+        .form-grid-add {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .switch-group-add {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-navigation {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .nav-button {
+            min-width: auto;
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .add-product-container {
+            padding: 100px 1rem 2rem;
+        }
+        
+        .form-card-add {
+            padding: 2.5rem 2rem;
+        }
+        
+        .add-title {
+            font-size: 1.8rem;
+        }
+        
+        .form-progress {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .progress-line {
+            display: none;
+        }
+        
+        .upload-area {
+            padding: 2rem;
+        }
+        
+        .floating-decoration-add {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .form-card-add {
+            padding: 2rem 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="add-product-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-decoration-add decoration-add-1"></div>
+    <div class="floating-decoration-add decoration-add-2"></div>
+    
+    <div class="add-product-wrapper">
+        <!-- Botón de volver -->
+        <a href="{% url 'admin_productos' %}" class="back-button-add reveal-item-add">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver al listado</span>
+        </a>
+        
+        <!-- Header -->
+        <div class="add-header reveal-item-add" style="animation-delay: 0.1s">
+            <h1 class="add-title">Agregar Nuevo Producto</h1>
+            <p class="add-subtitle">Completa el formulario para añadir un nuevo libro a tu catálogo</p>
+        </div>
+        
+        <!-- Formulario con múltiples pasos -->
+        <div class="form-card-add reveal-item-add" style="animation-delay: 0.2s">
+            <!-- Indicador de progreso -->
+            <div class="form-progress">
+                <div class="progress-line"></div>
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Información Básica</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Detalles</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Imagen y Opciones</div>
+                </div>
+            </div>
+            
+            <form method="POST" enctype="multipart/form-data" id="addProductForm">
+                {% csrf_token %}
+                
+                <!-- Paso 1: Información básica -->
+                <div class="form-section active" id="step1">
+                    <h3 class="section-title">Información Básica del Libro</h3>
+                    
+                    <div class="help-box">
+                        <div class="help-header">
+                            <div class="help-icon">
+                                <i class="bi bi-info-circle"></i>
+                            </div>
+                            <h4 class="help-title">Información importante</h4>
+                        </div>
+                        <div class="help-content">
+                            <p>Los campos marcados con <span class="required">*</span> son obligatorios. Asegúrate de proporcionar información clara y precisa para una mejor experiencia de compra.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid-add">
+                        <!-- Título -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">
+                                Título del libro
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control-add" 
+                                   name="titulo" 
+                                   required
+                                   placeholder="Ingresa el título completo"
+                                   id="titulo">
+                        </div>
+                        
+                        <!-- Autor -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">
+                                Autor
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control-add" 
+                                   name="autor" 
+                                   required
+                                   placeholder="Nombre completo del autor"
+                                   id="autor">
+                        </div>
+                        
+                        <!-- Precio -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">
+                                Precio ($)
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" 
+                                   step="0.01" 
+                                   class="form-control-add" 
+                                   name="precio" 
+                                   required
+                                   placeholder="0.00"
+                                   id="precio">
+                        </div>
+                        
+                        <!-- Precio original -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Precio original ($)</label>
+                            <input type="number" 
+                                   step="0.01" 
+                                   class="form-control-add" 
+                                   name="precio_original"
+                                   placeholder="Precio anterior (opcional)"
+                                   id="precio_original">
+                            <small class="text-muted d-block mt-1">Dejar vacío si no hay descuento aplicable</small>
+                        </div>
+                        
+                        <!-- Stock -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">
+                                Stock
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control-add" 
+                                   name="stock" 
+                                   value="1" 
+                                   required
+                                   min="0"
+                                   placeholder="Cantidad disponible"
+                                   id="stock">
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="form-group-add full-width">
+                            <label class="form-label-add">
+                                Descripción
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-control-add" 
+                                      name="descripcion" 
+                                      rows="4" 
+                                      required
+                                      placeholder="Describe el libro, su contenido y características..."
+                                      id="descripcion"></textarea>
+                            <small class="text-muted d-block mt-1">Mínimo 50 caracteres, máximo 2000 caracteres</small>
+                            <div class="text-end mt-1">
+                                <span id="charCount">0</span>/2000 caracteres
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <div></div> <!-- Espaciador izquierdo -->
+                        <button type="button" class="nav-button nav-button-next" onclick="nextStep(1)">
+                            <span>Siguiente</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Paso 2: Detalles del producto -->
+                <div class="form-section" id="step2">
+                    <h3 class="section-title">Detalles del Producto</h3>
+                    
+                    <div class="form-grid-add">
+                        <!-- Categoría -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">
+                                Categoría
+                                <span class="required">*</span>
+                            </label>
+                            <div class="custom-select-add">
+                                <select class="form-control-add" name="categoria" required id="categoria">
+                                    <option value="">Seleccionar categoría</option>
+                                    {% for categoria in categorias %}
+                                    <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                                <i class="bi bi-chevron-down select-icon-add"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Condición -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Condición</label>
+                            <div class="custom-select-add">
+                                <select class="form-control-add" name="condicion" id="condicion">
+                                    <option value="nuevo" selected>Nuevo</option>
+                                    <option value="usado">Usado</option>
+                                </select>
+                                <i class="bi bi-chevron-down select-icon-add"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- ISBN -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">ISBN</label>
+                            <input type="text" 
+                                   class="form-control-add" 
+                                   name="isbn"
+                                   placeholder="Número ISBN (opcional)"
+                                   id="isbn">
+                        </div>
+                        
+                        <!-- Editorial -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Editorial</label>
+                            <input type="text" 
+                                   class="form-control-add" 
+                                   name="editorial"
+                                   placeholder="Nombre de la editorial"
+                                   id="editorial">
+                        </div>
+                        
+                        <!-- Idioma -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Idioma</label>
+                            <input type="text" 
+                                   class="form-control-add" 
+                                   name="idioma" 
+                                   value="Español"
+                                   placeholder="Idioma del libro"
+                                   id="idioma">
+                        </div>
+                        
+                        <!-- Año de publicación -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Año de publicación</label>
+                            <input type="number" 
+                                   class="form-control-add" 
+                                   name="ano_publicacion"
+                                   placeholder="Ej: 2024"
+                                   min="1900"
+                                   max="{% now 'Y' %}"
+                                   id="ano_publicacion">
+                        </div>
+                        
+                        <!-- Páginas -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Número de páginas</label>
+                            <input type="number" 
+                                   class="form-control-add" 
+                                   name="paginas"
+                                   placeholder="Cantidad de páginas"
+                                   min="1"
+                                   id="paginas">
+                        </div>
+                        
+                        <!-- Dimensiones -->
+                        <div class="form-group-add">
+                            <label class="form-label-add">Dimensiones (cm)</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" 
+                                       class="form-control-add" 
+                                       placeholder="Alto"
+                                       name="alto">
+                                <input type="text" 
+                                       class="form-control-add" 
+                                       placeholder="Ancho"
+                                       name="ancho">
+                                <input type="text" 
+                                       class="form-control-add" 
+                                       placeholder="Espesor"
+                                       name="espesor">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-button nav-button-prev" onclick="prevStep(2)">
+                            <i class="bi bi-arrow-left"></i>
+                            <span>Anterior</span>
+                        </button>
+                        <button type="button" class="nav-button nav-button-next" onclick="nextStep(2)">
+                            <span>Siguiente</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Paso 3: Imagen y opciones -->
+                <div class="form-section" id="step3">
+                    <h3 class="section-title">Imagen y Configuraciones Finales</h3>
+                    
+                    <!-- Carga de imagen -->
+                    <div class="image-upload-add">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon-large">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+                            <div class="upload-text-large">
+                                <p class="primary">Subir imagen del producto</p>
+                                <p class="secondary">Arrastra y suelta una imagen o haz clic para seleccionar</p>
+                            </div>
+                            <input type="file" 
+                                   class="file-input-add" 
+                                   id="imageInput" 
+                                   name="imagen" 
+                                   accept="image/*"
+                                   required>
+                            <p class="text-muted mt-3">
+                                Formatos aceptados: JPG, PNG, GIF, WebP<br>
+                                Tamaño máximo: 5MB • Resolución recomendada: 1200x1600px
+                            </p>
+                        </div>
+                        
+                        <div class="image-preview-add" id="imagePreview">
+                            <div class="preview-container">
+                                <div class="preview-image-add">
+                                    <img id="previewImage" alt="Vista previa">
+                                </div>
+                                <div class="preview-info">
+                                    <p><strong>Nombre:</strong> <span id="fileName">-</span></p>
+                                    <p><strong>Tamaño:</strong> <span id="fileSize">-</span></p>
+                                    <p><strong>Dimensiones:</strong> <span id="fileDimensions">-</span></p>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger btn-sm mt-2" onclick="removeImage()">
+                                    <i class="bi bi-trash"></i> Eliminar imagen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Switches de opciones -->
+                    <div class="switch-group-add">
+                        <div class="switch-item-add">
+                            <label class="custom-switch-add">
+                                <input type="checkbox" 
+                                       name="destacado" 
+                                       id="destacado">
+                                <span class="slider-add"></span>
+                            </label>
+                            <div class="switch-label-add">
+                                Producto destacado
+                                <span class="help-text">Aparecerá en la sección principal y tendrá mayor visibilidad</span>
+                            </div>
+                        </div>
+                        
+                        <div class="switch-item-add">
+                            <label class="custom-switch-add">
+                                <input type="checkbox" 
+                                       name="activo" 
+                                       id="activo"
+                                       checked>
+                                <span class="slider-add"></span>
+                            </label>
+                            <div class="switch-label-add">
+                                Producto activo
+                                <span class="help-text">Visible inmediatamente en la tienda después de guardar</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resumen del producto -->
+                    <div class="help-box">
+                        <div class="help-header">
+                            <div class="help-icon">
+                                <i class="bi bi-eye"></i>
+                            </div>
+                            <h4 class="help-title">Vista previa del producto</h4>
+                        </div>
+                        <div class="help-content">
+                            <div id="productPreview">
+                                <p class="text-muted">La información del producto aparecerá aquí después de completar los pasos anteriores.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="nav-button nav-button-prev" onclick="prevStep(3)">
+                            <i class="bi bi-arrow-left"></i>
+                            <span>Anterior</span>
+                        </button>
+                        <button type="submit" class="nav-button nav-button-submit" id="submitButton">
+                            <i class="bi bi-save"></i>
+                            <span>Guardar Producto</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Observador para animaciones
+        const revealElements = document.querySelectorAll('.reveal-item-add');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Configuración del formulario de múltiples pasos
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        // Actualizar progreso
+        function updateProgress(step) {
+            document.querySelectorAll('.progress-step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+            
+            for (let i = 1; i <= step; i++) {
+                document.querySelector(`.progress-step[data-step="${i}"]`).classList.add('active');
+            }
+        }
+        
+        // Navegar entre pasos
+        window.nextStep = function(current) {
+            // Validar paso actual antes de avanzar
+            if (!validateStep(current)) {
+                return;
+            }
+            
+            document.getElementById(`step${current}`).classList.remove('active');
+            document.getElementById(`step${current + 1}`).classList.add('active');
+            currentStep = current + 1;
+            updateProgress(currentStep);
+            updateProductPreview();
+        };
+        
+        window.prevStep = function(current) {
+            document.getElementById(`step${current}`).classList.remove('active');
+            document.getElementById(`step${current - 1}`).classList.add('active');
+            currentStep = current - 1;
+            updateProgress(currentStep);
+        };
+        
+        // Validación de pasos
+        function validateStep(step) {
+            let isValid = true;
+            
+            // Resetear errores
+            document.querySelectorAll('.is-invalid-add').forEach(el => {
+                el.classList.remove('is-invalid-add');
+            });
+            
+            document.querySelectorAll('.invalid-feedback-add').forEach(el => {
+                el.remove();
+            });
+            
+            // Validar paso 1
+            if (step === 1) {
+                const requiredFields = [
+                    { id: 'titulo', name: 'título' },
+                    { id: 'autor', name: 'autor' },
+                    { id: 'precio', name: 'precio' },
+                    { id: 'stock', name: 'stock' },
+                    { id: 'descripcion', name: 'descripción' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    if (!element.value.trim()) {
+                        markInvalid(element, `El ${field.name} es obligatorio`);
+                        isValid = false;
+                    } else if (field.id === 'descripcion' && element.value.length < 50) {
+                        markInvalid(element, 'La descripción debe tener al menos 50 caracteres');
+                        isValid = false;
+                    } else if (field.id === 'precio' && parseFloat(element.value) <= 0) {
+                        markInvalid(element, 'El precio debe ser mayor a 0');
+                        isValid = false;
+                    } else if (field.id === 'stock' && parseInt(element.value) < 0) {
+                        markInvalid(element, 'El stock no puede ser negativo');
+                        isValid = false;
+                    }
+                });
+            }
+            
+            // Validar paso 2
+            if (step === 2) {
+                const categoria = document.getElementById('categoria');
+                if (!categoria.value) {
+                    markInvalid(categoria, 'La categoría es obligatoria');
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                // Mostrar mensaje de error
+                showToast('Por favor, corrige los errores en el formulario', 'danger');
+                
+                // Scroll al primer error
+                const firstError = document.querySelector('.is-invalid-add');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+            
+            return isValid;
+        }
+        
+        function markInvalid(element, message) {
+            element.classList.add('is-invalid-add');
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback-add';
+            errorDiv.innerHTML = `<i class="bi bi-x-circle"></i> ${message}`;
+            element.parentNode.insertBefore(errorDiv, element.nextSibling);
+        }
+        
+        // Vista previa de imagen
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        
+        if (uploadArea && imageInput) {
+            // Click en el área de carga
+            uploadArea.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            // Drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                uploadArea.classList.add('drag-over');
+            }
+            
+            function unhighlight() {
+                uploadArea.classList.remove('drag-over');
+            }
+            
+            // Manejar archivo soltado
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                imageInput.files = files;
+                handleFiles(files);
+            }
+            
+            // Manejar archivo seleccionado
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    handleFiles(this.files);
+                }
+            });
+            
+            function handleFiles(files) {
+                const file = files[0];
+                
+                // Validar tipo de archivo
+                if (!file.type.match('image.*')) {
+                    showToast('Por favor, selecciona una imagen válida', 'danger');
+                    return;
+                }
+                
+                // Validar tamaño (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('La imagen es demasiado grande (máximo 5MB)', 'danger');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    
+                    // Obtener dimensiones de la imagen
+                    const img = new Image();
+                    img.onload = function() {
+                        document.getElementById('fileDimensions').textContent = 
+                            `${this.width} × ${this.height}px`;
+                    };
+                    img.src = e.target.result;
+                    
+                    // Mostrar información del archivo
+                    document.getElementById('fileName').textContent = file.name;
+                    document.getElementById('fileSize').textContent = 
+                        formatBytes(file.size);
+                    
+                    // Mostrar vista previa
+                    imagePreview.style.display = 'block';
+                    imagePreview.style.opacity = '0';
+                    imagePreview.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        imagePreview.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        imagePreview.style.opacity = '1';
+                        imagePreview.style.transform = 'translateY(0)';
+                    }, 10);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            window.removeImage = function() {
+                imageInput.value = '';
+                imagePreview.style.display = 'none';
+                showToast('Imagen eliminada', 'info');
+            };
+        }
+        
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+        
+        // Contador de caracteres para descripción
+        const descriptionTextarea = document.getElementById('descripcion');
+        if (descriptionTextarea) {
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = descriptionTextarea.value.length;
+            
+            descriptionTextarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+                
+                // Actualizar vista previa
+                updateProductPreview();
+            });
+        }
+        
+        // Actualizar vista previa del producto
+        function updateProductPreview() {
+            const previewDiv = document.getElementById('productPreview');
+            
+            const titulo = document.getElementById('titulo').value || '[Título del libro]';
+            const autor = document.getElementById('autor').value || '[Autor]';
+            const precio = document.getElementById('precio').value || '0.00';
+            const precioOriginal = document.getElementById('precio_original').value;
+            const categoriaSelect = document.getElementById('categoria');
+            const categoria = categoriaSelect.options[categoriaSelect.selectedIndex]?.text || '[Categoría]';
+            const descripcion = document.getElementById('descripcion').value || '[Descripción del libro]';
+            
+            let previewHTML = `
+                <div class="preview-product-card">
+                    <h5 class="preview-title">${titulo}</h5>
+                    <p class="preview-author"><strong>Autor:</strong> ${autor}</p>
+                    <p class="preview-price">
+                        <strong>Precio:</strong> 
+                        <span class="text-success fw-bold">$${parseFloat(precio).toFixed(2)}</span>
+                        ${precioOriginal ? `<span class="text-muted text-decoration-line-through ms-2">$${parseFloat(precioOriginal).toFixed(2)}</span>` : ''}
+                    </p>
+                    <p class="preview-category"><strong>Categoría:</strong> ${categoria}</p>
+                    <p class="preview-description"><strong>Descripción:</strong> ${descripcion.substring(0, 150)}${descripcion.length > 150 ? '...' : ''}</p>
+                </div>
+            `;
+            
+            previewDiv.innerHTML = previewHTML;
+        }
+        
+        // Actualizar vista previa al cambiar campos
+        const previewFields = ['titulo', 'autor', 'precio', 'precio_original', 'categoria'];
+        previewFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updateProductPreview);
+                field.addEventListener('change', updateProductPreview);
+            }
+        });
+        
+        // Validación del formulario completo
+        const addProductForm = document.getElementById('addProductForm');
+        const submitButton = document.getElementById('submitButton');
+        
+        if (addProductForm) {
+            addProductForm.addEventListener('submit', function(e) {
+                // Validar todos los pasos
+                for (let step = 1; step <= totalSteps; step++) {
+                    if (!validateStep(step)) {
+                        e.preventDefault();
+                        
+                        // Ir al paso con errores
+                        document.querySelectorAll('.form-section').forEach(section => {
+                            section.classList.remove('active');
+                        });
+                        document.getElementById(`step${step}`).classList.add('active');
+                        currentStep = step;
+                        updateProgress(step);
+                        
+                        // Mostrar mensaje de error
+                        showToast('Por favor, completa todos los campos obligatorios correctamente', 'danger');
+                        
+                        // Scroll al primer error
+                        const firstError = document.querySelector('.is-invalid-add');
+                        if (firstError) {
+                            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            firstError.focus();
+                        }
+                        
+                        return;
+                    }
+                }
+                
+                // Validar imagen
+                if (!imageInput.files || !imageInput.files[0]) {
+                    e.preventDefault();
+                    showToast('Por favor, selecciona una imagen para el producto', 'danger');
+                    
+                    // Ir al paso 3
+                    document.querySelectorAll('.form-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById('step3').classList.add('active');
+                    currentStep = 3;
+                    updateProgress(3);
+                    
+                    uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                
+                // Mostrar estado de carga
+                submitButton.disabled = true;
+                const originalHTML = submitButton.innerHTML;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+                
+                // Simular retardo de guardado
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+        
+        // Formateo automático de precio
+        const priceInput = document.getElementById('precio');
+        if (priceInput) {
+            priceInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    this.value = value.toFixed(2);
+                    updateProductPreview();
+                }
+            });
+        }
+        
+        // Formateo automático de precio original
+        const priceOriginalInput = document.getElementById('precio_original');
+        if (priceOriginalInput) {
+            priceOriginalInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    this.value = value.toFixed(2);
+                    updateProductPreview();
+                }
+            });
+        }
+        
+        // Mostrar toast
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `position-fixed top-0 end-0 m-3 p-3 rounded-3 animate__animated animate__fadeInDown`;
+            toast.style.zIndex = '9999';
+            
+            let bgColor = 'bg-primary';
+            if (type === 'danger') bgColor = 'bg-danger';
+            if (type === 'success') bgColor = 'bg-success';
+            if (type === 'warning') bgColor = 'bg-warning';
+            if (type === 'info') bgColor = 'bg-info';
+            
+            toast.className += ` ${bgColor} text-white`;
+            
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi ${type === 'danger' ? 'bi-exclamation-triangle' : type === 'success' ? 'bi-check-circle' : 'bi-info-circle'} me-2"></i>
+                    <div>${message}</div>
+                    <button type="button" class="btn-close btn-close-white ms-3" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('animate__fadeOutDown');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+        
+        // Auto-guardado simulado
+        let autoSaveTimeout;
+        const autoSaveIndicator = document.createElement('div');
+        autoSaveIndicator.className = 'position-fixed bottom-0 start-0 m-3 p-3 bg-success text-white rounded-3 animate__animated animate__fadeInUp';
+        autoSaveIndicator.style.zIndex = '9999';
+        autoSaveIndicator.style.display = 'none';
+        autoSaveIndicator.innerHTML = '<i class="bi bi-check-circle me-2"></i> Progreso guardado automáticamente';
+        document.body.appendChild(autoSaveIndicator);
+        
+        addProductForm.addEventListener('input', function() {
+            clearTimeout(autoSaveTimeout);
+            
+            autoSaveTimeout = setTimeout(() => {
+                autoSaveIndicator.style.display = 'block';
+                setTimeout(() => {
+                    autoSaveIndicator.classList.add('animate__fadeOutDown');
+                    setTimeout(() => {
+                        autoSaveIndicator.style.display = 'none';
+                        autoSaveIndicator.classList.remove('animate__fadeOutDown');
+                    }, 300);
+                }, 2000);
+            }, 1500);
+        });
+        
+        // Inicializar vista previa
+        updateProductPreview();
+    });
+</script>
+{% endblock %}

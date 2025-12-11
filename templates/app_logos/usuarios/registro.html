@@ -1,0 +1,866 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE REGISTRO ESPECÍFICO
+    ============================================ */
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .register-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 1200px;
+        width: 100%;
+        gap: 4rem;
+        align-items: center;
+    }
+    
+    /* Lado izquierdo - Ilustración y beneficios */
+    .register-illustration {
+        padding: 3rem;
+        position: relative;
+    }
+    
+    .illustration-card {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, var(--ivory) 0%, var(--linen) 100%);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-floating);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .book-stack {
+        position: relative;
+        width: 200px;
+        height: 300px;
+    }
+    
+    .book {
+        position: absolute;
+        background: linear-gradient(135deg, var(--gold-leaf) 0%, var(--bronze) 100%);
+        border-radius: 4px 12px 12px 4px;
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        transform-origin: left center;
+        transition: var(--transition-smooth);
+    }
+    
+    .book-1 { width: 200px; height: 300px; }
+    .book-2 { width: 190px; height: 290px; transform: translateX(10px) rotateY(-15deg); }
+    .book-3 { width: 180px; height: 280px; transform: translateX(20px) rotateY(-30deg); }
+    
+    .illustration-card:hover .book-2 {
+        transform: translateX(20px) rotateY(-20deg);
+    }
+    
+    .illustration-card:hover .book-3 {
+        transform: translateX(40px) rotateY(-40deg);
+    }
+    
+    .benefits-list {
+        margin-top: 3rem;
+        padding-left: 0;
+        list-style: none;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+    }
+    
+    .benefit-item:hover {
+        transform: translateX(10px);
+        background: white;
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .benefit-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    /* Lado derecho - Formulario */
+    .register-form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 4rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .form-progress {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .form-progress::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        right: 20px;
+        height: 1px;
+        background: var(--platinum);
+        z-index: 1;
+    }
+    
+    .progress-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--platinum);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--silver);
+        font-weight: 500;
+        position: relative;
+        z-index: 2;
+        transition: var(--transition-smooth);
+    }
+    
+    .progress-step.active {
+        border-color: var(--gold-leaf);
+        background: var(--gold-leaf);
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    /* Campos del formulario */
+    .form-group {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--charcoal);
+        font-weight: 400;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-leaf);
+        font-size: 1.2rem;
+    }
+    
+    .form-control.register-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+    }
+    
+    .form-control.register-input:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+    }
+    
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+    
+    .strength-bar {
+        height: 4px;
+        background: var(--platinum);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 0.25rem;
+    }
+    
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--danger);
+        transition: width 0.3s ease;
+    }
+    
+    .strength-fill.weak { width: 25%; background: var(--danger); }
+    .strength-fill.fair { width: 50%; background: #f39c12; }
+    .strength-fill.good { width: 75%; background: #3498db; }
+    .strength-fill.strong { width: 100%; background: var(--success); }
+    
+    .strength-text {
+        font-size: 0.8rem;
+        color: var(--silver);
+    }
+    
+    /* Checkbox personalizado */
+    .form-check-input.custom-checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--platinum);
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .form-check-input.custom-checkbox:checked {
+        background: var(--gold-leaf);
+        border-color: var(--gold-leaf);
+    }
+    
+    .form-check-input.custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    /* Botón de registro */
+    .register-button {
+        width: 100%;
+        padding: 1.2rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+        margin-top: 2rem;
+    }
+    
+    .register-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .register-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .register-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Enlaces adicionales */
+    .register-links {
+        text-align: center;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--platinum);
+    }
+    
+    .register-link {
+        color: var(--steel-blue);
+        text-decoration: none;
+        margin: 0 1rem;
+        font-size: 0.95rem;
+        transition: var(--transition-smooth);
+        position: relative;
+    }
+    
+    .register-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--steel-blue);
+        transition: width 0.3s ease;
+    }
+    
+    .register-link:hover {
+        color: var(--navy-muted);
+    }
+    
+    .register-link:hover::after {
+        width: 100%;
+    }
+    
+    /* Decoración flotante */
+    .floating-element {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .element-1 {
+        top: 10%;
+        right: 5%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    }
+    
+    .element-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(70, 130, 180, 0.1) 0%, transparent 70%);
+        animation-delay: -2s;
+    }
+    
+    /* Animación de validación */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .input-error {
+        border-color: var(--danger) !important;
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    .error-message {
+        color: var(--danger);
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .error-message i {
+        margin-right: 0.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .register-wrapper {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .register-illustration {
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .illustration-card {
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        .register-form-container {
+            padding: 3rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .register-container {
+            padding: 1rem;
+        }
+        
+        .register-form-container {
+            padding: 2rem 1.5rem;
+        }
+        
+        .benefit-item {
+            padding: 1rem;
+        }
+        
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-element element-1"></div>
+    <div class="floating-element element-2"></div>
+    
+    <div class="register-wrapper">
+        <!-- Lado izquierdo: Ilustración y beneficios -->
+        <div class="register-illustration fade-in">
+            <div class="illustration-card">
+                <div class="book-stack">
+                    <div class="book book-1"></div>
+                    <div class="book book-2"></div>
+                    <div class="book book-3"></div>
+                </div>
+            </div>
+            
+            <h2 class="mt-4">Únete a nuestra comunidad literaria</h2>
+            <p class="text-muted mb-4">Descubre los beneficios exclusivos para miembros</p>
+            
+            <ul class="benefits-list">
+                <li class="benefit-item reveal">
+                    <div class="benefit-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <div>
+                        <h5>Acceso anticipado</h5>
+                        <p class="mb-0">Sé el primero en conocer los nuevos lanzamientos</p>
+                    </div>
+                </li>
+                <li class="benefit-item reveal" style="animation-delay: 0.1s">
+                    <div class="benefit-icon">
+                        <i class="bi bi-tag"></i>
+                    </div>
+                    <div>
+                        <h5>Descuentos exclusivos</h5>
+                        <p class="mb-0">Hasta 30% de descuento en compras frecuentes</p>
+                    </div>
+                </li>
+                <li class="benefit-item reveal" style="animation-delay: 0.2s">
+                    <div class="benefit-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        <h5>Envío prioritario</h5>
+                        <p class="mb-0">Recibe tus libros más rápido y con embalaje especial</p>
+                    </div>
+                </li>
+                <li class="benefit-item reveal" style="animation-delay: 0.3s">
+                    <div class="benefit-icon">
+                        <i class="bi bi-bookmark-heart"></i>
+                    </div>
+                    <div>
+                        <h5>Recomendaciones personalizadas</h5>
+                        <p class="mb-0">Basadas en tus gustos y hábitos de lectura</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Lado derecho: Formulario -->
+        <div class="register-form-container fade-in" style="animation-delay: 0.2s">
+            <div class="form-progress">
+                <div class="progress-step active">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step">3</div>
+            </div>
+            
+            <div class="form-header text-center mb-4">
+                <h2>Crear Cuenta</h2>
+                <p class="text-muted">Completa tus datos para comenzar tu viaje literario</p>
+            </div>
+            
+            <form method="POST" class="register-form" id="registerForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle me-3"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre de usuario</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" 
+                               name="username" 
+                               id="id_username"
+                               class="form-control register-input" 
+                               placeholder="Elige un nombre de usuario"
+                               required
+                               autocomplete="username"
+                               autofocus>
+                    </div>
+                    {% if form.username.errors %}
+                    <div class="error-message">
+                        <i class="bi bi-x-circle"></i>
+                        {% for error in form.username.errors %}<span>{{ error }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if form.username.help_text %}
+                    <div class="form-text text-muted mt-1">{{ form.username.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" 
+                               name="email" 
+                               id="id_email"
+                               class="form-control register-input" 
+                               placeholder="tu@email.com"
+                               required
+                               autocomplete="email">
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="error-message">
+                        <i class="bi bi-x-circle"></i>
+                        {% for error in form.email.errors %}<span>{{ error }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" 
+                               name="password1" 
+                               id="id_password1"
+                               class="form-control register-input" 
+                               placeholder="Crea una contraseña segura"
+                               required
+                               autocomplete="new-password">
+                        <button type="button" class="password-toggle" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--silver); cursor: pointer;" onclick="togglePassword('id_password1')">
+                            <i class="bi bi-eye" id="passwordIcon1"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength mt-2">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="passwordStrength"></div>
+                        </div>
+                        <div class="strength-text" id="passwordText">Escribe una contraseña</div>
+                    </div>
+                    {% if form.password1.errors %}
+                    <div class="error-message">
+                        <i class="bi bi-x-circle"></i>
+                        {% for error in form.password1.errors %}<span>{{ error }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if form.password1.help_text %}
+                    <div class="form-text text-muted mt-1">{{ form.password1.help_text|safe }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-lock-fill input-icon"></i>
+                        <input type="password" 
+                               name="password2" 
+                               id="id_password2"
+                               class="form-control register-input" 
+                               placeholder="Repite tu contraseña"
+                               required
+                               autocomplete="new-password">
+                        <button type="button" class="password-toggle" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--silver); cursor: pointer;" onclick="togglePassword('id_password2')">
+                            <i class="bi bi-eye" id="passwordIcon2"></i>
+                        </button>
+                    </div>
+                    {% if form.password2.errors %}
+                    <div class="error-message">
+                        <i class="bi bi-x-circle"></i>
+                        {% for error in form.password2.errors %}<span>{{ error }}</span>{% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-check mb-4">
+                    <input class="form-check-input custom-checkbox" type="checkbox" id="terms" required>
+                    <label class="form-check-label ms-2" for="terms" style="color: var(--charcoal); opacity: 0.8;">
+                        Acepto los <a href="#" class="text-gold">términos y condiciones</a> y la <a href="#" class="text-gold">política de privacidad</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="register-button" id="submitBtn">
+                    <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                </button>
+                
+                <div class="register-links">
+                    <span style="color: var(--charcoal); opacity: 0.6;">¿Ya tienes una cuenta?</span>
+                    <a href="{% url 'login' %}" class="register-link">Iniciar Sesión</a>
+                    <span style="color: var(--charcoal); opacity: 0.6;">o</span>
+                    <a href="{% url 'tienda' %}" class="register-link">Explorar como invitado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    function togglePassword(inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const passwordIcon = document.getElementById('passwordIcon' + inputId.slice(-1));
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('bi-eye');
+            passwordIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('bi-eye-slash');
+            passwordIcon.classList.add('bi-eye');
+        }
+    }
+    
+    // Password strength indicator
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('id_password1');
+        const strengthBar = document.getElementById('passwordStrength');
+        const strengthText = document.getElementById('passwordText');
+        
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                let text = '';
+                
+                // Check password strength
+                if (password.length >= 8) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+                
+                // Update strength bar and text
+                strengthBar.className = 'strength-fill';
+                switch(strength) {
+                    case 0:
+                        text = 'Escribe una contraseña';
+                        break;
+                    case 1:
+                        strengthBar.classList.add('weak');
+                        text = 'Débil';
+                        break;
+                    case 2:
+                        strengthBar.classList.add('fair');
+                        text = 'Aceptable';
+                        break;
+                    case 3:
+                        strengthBar.classList.add('good');
+                        text = 'Buena';
+                        break;
+                    case 4:
+                        strengthBar.classList.add('strong');
+                        text = 'Excelente';
+                        break;
+                }
+                
+                strengthText.textContent = text;
+                
+                // Check password match
+                const confirmPassword = document.getElementById('id_password2');
+                if (confirmPassword && confirmPassword.value) {
+                    checkPasswordMatch();
+                }
+            });
+            
+            // Check password match
+            const confirmPassword = document.getElementById('id_password2');
+            if (confirmPassword) {
+                confirmPassword.addEventListener('input', checkPasswordMatch);
+            }
+            
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirm = confirmPassword.value;
+                
+                if (confirm) {
+                    if (password === confirm) {
+                        confirmPassword.classList.remove('input-error');
+                        confirmPassword.classList.add('is-valid');
+                    } else {
+                        confirmPassword.classList.remove('is-valid');
+                        confirmPassword.classList.add('input-error');
+                    }
+                }
+            }
+            
+            // Form validation
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            form.addEventListener('submit', function(e) {
+                let hasErrors = false;
+                
+                // Validate required fields
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('input-error');
+                        hasErrors = true;
+                        
+                        // Add error message if not exists
+                        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'error-message';
+                            errorDiv.innerHTML = '<i class="bi bi-x-circle"></i> Este campo es obligatorio';
+                            field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                        }
+                    } else {
+                        field.classList.remove('input-error');
+                        
+                        // Remove error message if exists
+                        const errorMsg = field.nextElementSibling;
+                        if (errorMsg && errorMsg.classList.contains('error-message')) {
+                            errorMsg.remove();
+                        }
+                    }
+                });
+                
+                // Validate terms checkbox
+                const termsCheckbox = document.getElementById('terms');
+                if (!termsCheckbox.checked) {
+                    termsCheckbox.classList.add('input-error');
+                    hasErrors = true;
+                } else {
+                    termsCheckbox.classList.remove('input-error');
+                }
+                
+                if (hasErrors) {
+                    e.preventDefault();
+                    
+                    // Animate error
+                    form.classList.add('animate__animated', 'animate__shakeX');
+                    setTimeout(() => {
+                        form.classList.remove('animate__animated', 'animate__shakeX');
+                    }, 1000);
+                    
+                    // Show error message
+                    const toast = document.createElement('div');
+                    toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 animate__animated animate__fadeIn';
+                    toast.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <div>Por favor, corrige los errores en el formulario.</div>
+                            <button type="button" class="btn-close ms-3" onclick="this.parentElement.remove()"></button>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 5000);
+                } else {
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando cuenta...';
+                }
+            });
+            
+            // Remove error on input
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('input-error');
+                    
+                    const errorMsg = this.nextElementSibling;
+                    if (errorMsg && errorMsg.classList.contains('error-message')) {
+                        errorMsg.remove();
+                    }
+                });
+            });
+            
+            // Auto-check username availability (simulated)
+            const usernameInput = document.getElementById('id_username');
+            if (usernameInput) {
+                let timeout = null;
+                
+                usernameInput.addEventListener('input', function() {
+                    clearTimeout(timeout);
+                    
+                    timeout = setTimeout(() => {
+                        const username = this.value;
+                        if (username.length >= 3) {
+                            // Simulate API call
+                            this.classList.add('is-valid');
+                            
+                            // Remove any existing check icon
+                            const existingCheck = this.parentNode.querySelector('.availability-check');
+                            if (existingCheck) existingCheck.remove();
+                            
+                            // Add check icon
+                            const checkIcon = document.createElement('i');
+                            checkIcon.className = 'bi bi-check-circle-fill text-success availability-check';
+                            checkIcon.style.position = 'absolute';
+                            checkIcon.style.right = '2.5rem';
+                            checkIcon.style.top = '50%';
+                            checkIcon.style.transform = 'translateY(-50%)';
+                            checkIcon.style.fontSize = '1.2rem';
+                            this.parentNode.appendChild(checkIcon);
+                        }
+                    }, 500);
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

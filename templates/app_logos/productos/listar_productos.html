@@ -1,0 +1,1102 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrar Productos - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE ADMINISTRACIÓN PREMIUM
+    ============================================ */
+    .admin-container {
+        min-height: 100vh;
+        padding: 140px 2rem 4rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .admin-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header de administración */
+    .admin-header {
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .admin-title {
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .admin-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    .admin-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    /* Toolbar */
+    .admin-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--platinum);
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .toolbar-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    /* Botones de administración */
+    .admin-button {
+        padding: 0.875rem 1.75rem;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        cursor: pointer;
+    }
+    
+    .admin-button-primary {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .admin-button-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .admin-button-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .admin-button-secondary {
+        background: transparent;
+        border-color: var(--steel-blue);
+        color: var(--steel-blue);
+    }
+    
+    .admin-button-secondary:hover {
+        background: var(--steel-blue);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .admin-button-outline {
+        background: transparent;
+        border-color: var(--charcoal);
+        color: var(--charcoal);
+    }
+    
+    .admin-button-outline:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Filtros rápidos */
+    .quick-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-chip {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--platinum);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        color: var(--charcoal);
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .filter-chip:hover {
+        background: white;
+        border-color: var(--gold-leaf);
+        transform: translateY(-2px);
+    }
+    
+    .filter-chip.active {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-color: var(--gold-leaf);
+        color: white;
+    }
+    
+    /* Tabla premium */
+    .products-table-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .products-table-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    /* Header de tabla */
+    .table-header {
+        background: linear-gradient(135deg, var(--ivory) 0%, var(--linen) 100%);
+        padding: 2rem;
+        border-bottom: 1px solid var(--platinum);
+    }
+    
+    .table-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 400;
+        color: var(--jet);
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0;
+    }
+    
+    /* Tabla responsive */
+    .table-responsive {
+        overflow-x: auto;
+        padding: 0 2rem;
+    }
+    
+    .products-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 1.5rem 0;
+    }
+    
+    .products-table thead th {
+        background: rgba(248, 248, 255, 0.8);
+        padding: 1.5rem 1rem;
+        text-align: left;
+        font-weight: 500;
+        color: var(--charcoal);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+        border-bottom: 2px solid var(--platinum);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .products-table tbody tr {
+        transition: var(--transition-smooth);
+        border-bottom: 1px solid rgba(192, 192, 192, 0.2);
+    }
+    
+    .products-table tbody tr:hover {
+        background: rgba(248, 248, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .products-table tbody td {
+        padding: 1.5rem 1rem;
+        vertical-align: middle;
+        color: var(--charcoal);
+    }
+    
+    /* Imagen del producto */
+    .product-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .product-image:hover img {
+        transform: scale(1.1);
+    }
+    
+    /* Información del producto */
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .product-title {
+        font-weight: 500;
+        color: var(--jet);
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+    
+    .product-isbn {
+        font-size: 0.85rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+    }
+    
+    /* Badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    
+    .status-badge.active {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
+    }
+    
+    .status-badge.inactive {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+    }
+    
+    .status-badge.high-stock {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+    }
+    
+    .status-badge.low-stock {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+    }
+    
+    .status-badge.out-of-stock {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    
+    .status-badge.category {
+        background: linear-gradient(135deg, var(--steel-blue), var(--navy-muted));
+        color: white;
+    }
+    
+    .status-badge.featured {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+        margin-top: 0.25rem;
+    }
+    
+    /* Precio */
+    .price-display {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .current-price {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: var(--gold-leaf);
+    }
+    
+    .original-price {
+        font-size: 0.9rem;
+        color: var(--charcoal);
+        opacity: 0.6;
+        text-decoration: line-through;
+    }
+    
+    /* Acciones */
+    .actions-cell {
+        min-width: 180px;
+    }
+    
+    .actions-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .action-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-decoration: none;
+    }
+    
+    .action-button.edit {
+        background: linear-gradient(135deg, var(--steel-blue), var(--navy-muted));
+    }
+    
+    .action-button.delete {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+    
+    .action-button.view {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+    
+    .action-button:hover {
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Estado vacío */
+    .empty-state {
+        text-align: center;
+        padding: 6rem 2rem;
+    }
+    
+    .empty-illustration {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 3rem;
+        position: relative;
+    }
+    
+    .empty-illustration::before,
+    .empty-illustration::after {
+        content: '';
+        position: absolute;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 4px 12px 12px 4px;
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+        opacity: 0.3;
+    }
+    
+    .empty-illustration::before {
+        width: 120px;
+        height: 160px;
+        top: 20px;
+        left: 40px;
+        transform: rotate(-10deg);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .empty-illustration::after {
+        width: 100px;
+        height: 140px;
+        top: 40px;
+        left: 80px;
+        transform: rotate(5deg);
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    .empty-state-btn {
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+    
+    .empty-state-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Paginación */
+    .pagination-container {
+        padding: 2rem;
+        border-top: 1px solid var(--platinum);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .pagination-info {
+        color: var(--charcoal);
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+    
+    .pagination-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .page-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--platinum);
+        color: var(--charcoal);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+    }
+    
+    .page-button:hover {
+        background: white;
+        border-color: var(--gold-leaf);
+        color: var(--gold-leaf);
+        transform: translateY(-2px);
+    }
+    
+    .page-button.active {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-color: var(--gold-leaf);
+        color: white;
+    }
+    
+    .page-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    /* Decoraciones flotantes */
+    .floating-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-1 {
+        top: 20%;
+        right: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--steel-blue);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .products-table {
+            min-width: 1000px;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .admin-container {
+            padding: 120px 1.5rem 3rem;
+        }
+        
+        .admin-toolbar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .toolbar-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 100px 1rem 2rem;
+        }
+        
+        .admin-title {
+            font-size: 1.8rem;
+        }
+        
+        .table-responsive {
+            padding: 0 1rem;
+        }
+        
+        .products-table thead th,
+        .products-table tbody td {
+            padding: 1rem 0.75rem;
+        }
+        
+        .pagination-container {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .toolbar-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .admin-button {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .quick-filters {
+            justify-content: center;
+        }
+        
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .floating-decoration {
+            display: none;
+        }
+    }
+    
+    /* Animaciones */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .reveal-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .table-row {
+        animation: slideInRight 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-decoration decoration-1"></div>
+    <div class="floating-decoration decoration-2"></div>
+    
+    <div class="admin-wrapper">
+        <!-- Header -->
+        <div class="admin-header reveal-item">
+            <h1 class="admin-title">Administrar Productos</h1>
+            <p class="admin-subtitle">Gestiona tu catálogo literario con precisión y elegancia</p>
+        </div>
+        
+        {% if productos %}
+        <!-- Toolbar -->
+        <div class="admin-toolbar reveal-item" style="animation-delay: 0.1s">
+            <div class="toolbar-info">
+                <h3 class="table-title">
+                    <i class="bi bi-box-seam"></i>
+                    Catálogo de Libros
+                </h3>
+            </div>
+            
+            <div class="toolbar-actions">
+                <a href="{% url 'agregar_producto' %}" class="admin-button admin-button-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Producto</span>
+                </a>
+                <a href="{% url 'admin:index' %}" class="admin-button admin-button-secondary">
+                    <i class="bi bi-gear"></i>
+                    <span>Panel Admin</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Filtros rápidos -->
+        <div class="quick-filters reveal-item" style="animation-delay: 0.2s">
+            <div class="filter-chip active" data-filter="all">
+                <i class="bi bi-grid"></i>
+                <span>Todos</span>
+                <span class="badge bg-light text-dark ms-2">{{ productos.count }}</span>
+            </div>
+            <div class="filter-chip" data-filter="active">
+                <i class="bi bi-check-circle"></i>
+                <span>Activos</span>
+            </div>
+            <div class="filter-chip" data-filter="featured">
+                <i class="bi bi-star"></i>
+                <span>Destacados</span>
+            </div>
+            <div class="filter-chip" data-filter="low-stock">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Stock Bajo</span>
+            </div>
+            <div class="filter-chip" data-filter="out-of-stock">
+                <i class="bi bi-x-circle"></i>
+                <span>Agotados</span>
+            </div>
+        </div>
+        
+        <!-- Tabla de productos -->
+        <div class="products-table-container reveal-item" style="animation-delay: 0.3s">
+            <div class="table-header">
+                <h3 class="table-title">
+                    <i class="bi bi-bookshelf"></i>
+                    Lista de Productos
+                </h3>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Autor</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr class="table-row" data-status="{% if producto.activo %}active{% else %}inactive{% endif %}" 
+                            data-stock="{{ producto.stock }}" 
+                            data-featured="{% if producto.destacado %}true{% else %}false{% endif %}"
+                            style="--delay-index: {{ forloop.counter0 }};">                            <div class="product-image">
+                                        {% if producto.imagen %}
+                                        <img src="{{ producto.imagen.url }}" alt="{{ producto.titulo }}">
+                                        {% else %}
+                                        <i class="bi bi-book text-muted"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-info">
+                                        <span class="product-title">{{ producto.titulo|truncatechars:40 }}</span>
+                                        <span class="product-isbn">{{ producto.isbn|default:"Sin ISBN" }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <!-- Autor -->
+                            <td>
+                                <span style="color: var(--charcoal); opacity: 0.9;">
+                                    {{ producto.autor|truncatechars:20 }}
+                                </span>
+                            </td>
+                            
+                            <!-- Precio -->
+                            <td>
+                                <div class="price-display">
+                                    <span class="current-price">${{ producto.precio }}</span>
+                                    {% if producto.precio_original %}
+                                    <span class="original-price">${{ producto.precio_original }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            
+                            <!-- Stock -->
+                            <td>
+                                {% if producto.stock > 10 %}
+                                <span class="status-badge high-stock">
+                                    <i class="bi bi-check-circle"></i>
+                                    {{ producto.stock }} unidades
+                                </span>
+                                {% elif producto.stock > 0 %}
+                                <span class="status-badge low-stock">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    {{ producto.stock }} unidades
+                                </span>
+                                {% else %}
+                                <span class="status-badge out-of-stock">
+                                    <i class="bi bi-x-circle"></i>
+                                    Agotado
+                                </span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Categoría -->
+                            <td>
+                                <span class="status-badge category">
+                                    {{ producto.categoria.nombre|default:"Sin categoría" }}
+                                </span>
+                            </td>
+                            
+                            <!-- Estado -->
+                            <td>
+                                <div class="d-flex flex-column gap-1">
+                                    {% if producto.activo %}
+                                    <span class="status-badge active">
+                                        <i class="bi bi-check-circle"></i>
+                                        Activo
+                                    </span>
+                                    {% else %}
+                                    <span class="status-badge inactive">
+                                        <i class="bi bi-x-circle"></i>
+                                        Inactivo
+                                    </span>
+                                    {% endif %}
+                                    
+                                    {% if producto.destacado %}
+                                    <span class="status-badge featured">
+                                        <i class="bi bi-star"></i>
+                                        Destacado
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            
+                            <!-- Acciones -->
+                            <td class="actions-cell">
+                                <div class="actions-group">
+                                    <a href="{% url 'editar_producto' producto.id %}" 
+                                       class="action-button edit"
+                                       data-bs-toggle="tooltip" 
+                                       title="Editar producto">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'eliminar_producto' producto.id %}" 
+                                       class="action-button delete"
+                                       data-bs-toggle="tooltip" 
+                                       title="Eliminar producto">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                    <a href="{% url 'tienda' %}" 
+                                       class="action-button view"
+                                       data-bs-toggle="tooltip" 
+                                       title="Ver en tienda">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Mostrando {{ productos.count }} de {{ productos.count }} productos
+                </div>
+                
+                <nav class="pagination-nav" aria-label="Paginación">
+                    <a href="#" class="page-button disabled">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    
+                    <a href="#" class="page-button active">1</a>
+                    <a href="#" class="page-button">2</a>
+                    <a href="#" class="page-button">3</a>
+                    <a href="#" class="page-button">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+        {% else %}
+        <!-- Estado vacío -->
+        <div class="empty-state reveal-item">
+            <div class="empty-illustration"></div>
+            <h3 class="mb-3">No hay productos registrados</h3>
+            <p class="lead mb-4" style="opacity: 0.7;">
+                Comienza agregando tu primer producto al catálogo.<br>
+                Cada libro es una nueva oportunidad para inspirar.
+            </p>
+            <a href="{% url 'agregar_producto' %}" class="empty-state-btn">
+                <i class="bi bi-plus-circle"></i>
+                <span>Agregar Primer Producto</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Observador para animaciones
+        const revealElements = document.querySelectorAll('.reveal-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Animación escalonada para filas de tabla
+        const tableRows = document.querySelectorAll('.table-row');
+        tableRows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.1}s`;
+            row.style.animationFillMode = 'forwards';
+        });
+        
+        // Filtros rápidos
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const productRows = document.querySelectorAll('.table-row');
+        
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', function() {
+                // Actualizar chips activos
+                filterChips.forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                
+                // Filtrar productos
+                productRows.forEach(row => {
+                    let show = false;
+                    
+                    switch(filter) {
+                        case 'all':
+                            show = true;
+                            break;
+                            
+                        case 'active':
+                            show = row.dataset.status === 'active';
+                            break;
+                            
+                        case 'featured':
+                            show = row.dataset.featured === 'true';
+                            break;
+                            
+                        case 'low-stock':
+                            const stock = parseInt(row.dataset.stock);
+                            show = stock > 0 && stock <= 10;
+                            break;
+                            
+                        case 'out-of-stock':
+                            show = parseInt(row.dataset.stock) === 0;
+                            break;
+                    }
+                    
+                    // Animación de transición
+                    if (show) {
+                        row.style.display = '';
+                        setTimeout(() => {
+                            row.style.opacity = '1';
+                            row.style.transform = 'translateX(0)';
+                        }, 10);
+                    } else {
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            row.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                // Actualizar contador
+                const visibleCount = Array.from(productRows).filter(row => 
+                    row.style.display !== 'none' && row.style.opacity !== '0'
+                ).length;
+                
+                // Mostrar mensaje si no hay resultados
+                const noResults = visibleCount === 0;
+                if (noResults) {
+                    showNoResultsMessage(filter);
+                } else {
+                    hideNoResultsMessage();
+                }
+            });
+        });
+        
+        // Mensaje de no resultados
+        function showNoResultsMessage(filter) {
+            let message = '';
+            switch(filter) {
+                case 'active': message = 'No hay productos activos'; break;
+                case 'featured': message = 'No hay productos destacados'; break;
+                case 'low-stock': message = 'No hay productos con stock bajo'; break;
+                case 'out-of-stock': message = 'No hay productos agotados'; break;
+            }
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = 'text-center py-5';
+            messageElement.innerHTML = `
+                <i class="bi bi-search display-4 text-muted mb-3"></i>
+                <h4 class="mb-3">${message}</h4>
+                <p class="text-muted">Intenta con otro filtro o agrega nuevos productos.</p>
+            `;
+            
+            const tableContainer = document.querySelector('.table-responsive');
+            if (tableContainer && !tableContainer.querySelector('.no-results')) {
+                messageElement.classList.add('no-results');
+                tableContainer.appendChild(messageElement);
+            }
+        }
+        
+        function hideNoResultsMessage() {
+            const message = document.querySelector('.no-results');
+            if (message) {
+                message.remove();
+            }
+        }
+        
+        // Tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                trigger: 'hover'
+            });
+        });
+        
+        // Confirmación para eliminar
+        const deleteButtons = document.querySelectorAll('.action-button.delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+        
+        // Efecto hover en filas
+        productRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = 'var(--shadow-soft)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                if (!this.style.display || this.style.display !== 'none') {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                }
+            });
+        });
+        
+        // Ordenamiento por columnas
+        const tableHeaders = document.querySelectorAll('.products-table thead th');
+        tableHeaders.forEach((header, index) => {
+            if (index !== tableHeaders.length - 1) { // Excluir columna de acciones
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', function() {
+                    sortTable(index);
+                });
+            }
+        });
+        
+        let sortDirection = true; // true = asc, false = desc
+        
+        function sortTable(column) {
+            const table = document.querySelector('.products-table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                let aText = a.children[column].textContent.trim();
+                let bText = b.children[column].textContent.trim();
+                
+                // Para columnas numéricas (precio, stock)
+                if (column === 2 || column === 3) {
+                    aText = parseFloat(aText.replace(/[^\d.-]/g, '')) || 0;
+                    bText = parseFloat(bText.replace(/[^\d.-]/g, '')) || 0;
+                }
+                
+                if (sortDirection) {
+                    return aText > bText ? 1 : -1;
+                } else {
+                    return aText < bText ? 1 : -1;
+                }
+            });
+            
+            // Reordenar filas
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Cambiar dirección para siguiente ordenamiento
+            sortDirection = !sortDirection;
+            
+            // Actualizar indicador visual
+            tableHeaders.forEach(h => h.classList.remove('sorted'));
+            tableHeaders[column].classList.add('sorted');
+        }
+    });
+</script>
+{% endblock %}

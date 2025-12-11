@@ -1,0 +1,913 @@
+{% extends 'base.html' %}
+
+{% block title %}Tienda - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE TIENDA PREMIUM
+    ============================================ */
+    .shop-container {
+        min-height: 100vh;
+        padding: 140px 2rem 4rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+    }
+    
+    .shop-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    /* Header de la tienda */
+    .shop-header {
+        margin-bottom: 3rem;
+        position: relative;
+    }
+    
+    .shop-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .shop-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-leaf), transparent);
+    }
+    
+    .shop-subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    /* Grid principal */
+    .shop-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 3rem;
+    }
+    
+    /* Sidebar de filtros con scroll independiente */
+    .shop-sidebar {
+        position: sticky;
+        top: 140px;
+        height: calc(100vh - 200px);
+        overflow-y: auto;
+        padding-right: 1rem;
+    }
+    
+    /* Estilos personalizados para el scrollbar */
+    .shop-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .shop-sidebar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+    }
+    
+    .shop-sidebar::-webkit-scrollbar-thumb {
+        background: linear-gradient(var(--gold-leaf), var(--bronze));
+        border-radius: 10px;
+    }
+    
+    .shop-sidebar::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(var(--bronze), var(--gold-leaf));
+    }
+    
+    .filters-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        overflow: visible;
+    }
+    
+    .filters-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .filters-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--platinum);
+        position: relative;
+    }
+    
+    .filters-header h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 400;
+        color: var(--jet);
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    /* Barra de búsqueda */
+    .search-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .search-form {
+        position: relative;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--platinum);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        color: var(--charcoal);
+    }
+    
+    .search-input:focus {
+        background: white;
+        border-color: var(--gold-leaf);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        outline: none;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-leaf);
+        font-size: 1.2rem;
+    }
+    
+    .search-button {
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border: none;
+        border-radius: 10px;
+        color: white;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+    
+    .search-button:hover {
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Categorías */
+    .categories-section {
+        margin-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--charcoal);
+        opacity: 0.8;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .categories-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .category-item {
+        margin-bottom: 0.75rem;
+    }
+    
+    .category-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        color: var(--charcoal);
+        text-decoration: none;
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--gold-leaf);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .category-link:hover {
+        background: rgba(248, 248, 255, 0.8);
+        color: var(--jet);
+    }
+    
+    .category-link:hover::before {
+        transform: translateX(0);
+    }
+    
+    .category-link.active {
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), transparent);
+        color: var(--gold-leaf);
+        font-weight: 500;
+    }
+    
+    .category-link.active::before {
+        transform: translateX(0);
+    }
+    
+    .category-count {
+        font-size: 0.85rem;
+        color: var(--silver);
+        background: var(--ivory);
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        border: 1px solid var(--platinum);
+    }
+    
+    /* Área principal de libros */
+    .shop-main {
+        position: relative;
+        height: fit-content;
+    }
+    
+    .shop-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--platinum);
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .results-info {
+        font-size: 1.1rem;
+        color: var(--charcoal);
+        opacity: 0.8;
+    }
+    
+    .results-count {
+        color: var(--jet);
+        font-weight: 500;
+    }
+    
+    /* Grid de libros */
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    /* Tarjeta de libro */
+    .book-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+        transition: var(--transition-smooth);
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .book-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-floating);
+    }
+    
+    .book-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    .book-image {
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
+    
+    .book-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .book-card:hover .book-image img {
+        transform: scale(1.05);
+    }
+    
+    .book-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        display: flex;
+        align-items: flex-end;
+        padding: 2rem;
+    }
+    
+    .book-card:hover .book-overlay {
+        opacity: 1;
+    }
+    
+    .quick-action {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.6s ease;
+    }
+    
+    .book-card:hover .quick-action {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .book-content {
+        padding: 2rem;
+    }
+    
+    .book-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: var(--jet);
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        max-height: calc(1.3em * 2);
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .book-author {
+        color: var(--charcoal);
+        opacity: 0.7;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        height: 1.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .book-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    
+    .price-amount {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: var(--gold-leaf);
+    }
+    
+    .add-to-cart-btn {
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, var(--steel-blue), var(--navy-muted));
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(70, 130, 180, 0.3);
+    }
+    
+    /* Estado vacío */
+    .empty-state {
+        text-align: center;
+        padding: 6rem 2rem;
+        grid-column: 1 / -1;
+    }
+    
+    .empty-illustration {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 3rem;
+        position: relative;
+    }
+    
+    .empty-illustration::before,
+    .empty-illustration::after {
+        content: '';
+        position: absolute;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 4px 12px 12px 4px;
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+        opacity: 0.3;
+    }
+    
+    .empty-illustration::before {
+        width: 120px;
+        height: 160px;
+        top: 20px;
+        left: 40px;
+        transform: rotate(-10deg);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .empty-illustration::after {
+        width: 100px;
+        height: 140px;
+        top: 40px;
+        left: 80px;
+        transform: rotate(5deg);
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    .empty-state-btn {
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+    
+    .empty-state-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    /* Decoraciones flotantes */
+    .floating-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.1;
+    }
+    
+    .decoration-1 {
+        top: 20%;
+        right: 5%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .decoration-2 {
+        bottom: 20%;
+        left: 5%;
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--steel-blue);
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite reverse;
+    }
+    
+    /* Responsive */
+    @media (max-width: 992px) {
+        .shop-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .shop-sidebar {
+            position: static;
+            height: auto;
+            overflow: visible;
+            padding-right: 0;
+        }
+        
+        .filters-card {
+            padding: 2rem;
+        }
+        
+        .shop-toolbar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .shop-container {
+            padding: 120px 1.5rem 3rem;
+        }
+        
+        .books-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+        
+        .book-image {
+            height: 250px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .shop-container {
+            padding: 100px 1rem 2rem;
+        }
+        
+        .shop-title {
+            font-size: 2rem;
+        }
+        
+        .books-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .book-card {
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        
+        .filters-card {
+            padding: 1.5rem;
+        }
+        
+        .floating-decoration {
+            display: none;
+        }
+    }
+    
+    /* Animaciones */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .reveal-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .book-card {
+        animation: slideInUp 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="shop-container">
+    <!-- Decoraciones flotantes -->
+    <div class="floating-decoration decoration-1"></div>
+    <div class="floating-decoration decoration-2"></div>
+    
+    <div class="shop-wrapper">
+        <!-- Header -->
+        <div class="shop-header reveal-item">
+            <h1 class="shop-title">Nuestra Colección</h1>
+            <p class="shop-subtitle">Descubre obras maestras literarias seleccionadas con criterio de excelencia</p>
+        </div>
+        
+        <div class="shop-grid">
+            <!-- Sidebar de filtros con scroll independiente -->
+            <div class="shop-sidebar">
+                <div class="filters-card reveal-item" style="animation-delay: 0.1s">
+                    <!-- Header -->
+                    <div class="filters-header">
+                        <h3>
+                            <i class="bi bi-funnel"></i>
+                            Filtros
+                        </h3>
+                    </div>
+                    
+                    <!-- Barra de búsqueda -->
+                    <div class="search-section">
+                        <form method="get" action="{% url 'tienda' %}" class="search-form">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" 
+                                   name="q" 
+                                   class="search-input" 
+                                   placeholder="Buscar por título, autor..."
+                                   value="{{ query }}">
+                            <button type="submit" class="search-button">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Categorías -->
+                    <div class="categories-section">
+                        <h4 class="section-title">
+                            <i class="bi bi-tags"></i>
+                            Categorías
+                        </h4>
+                        <ul class="categories-list">
+                            <li class="category-item">
+                                <a href="{% url 'tienda' %}" 
+                                   class="category-link {% if not request.GET.categoria %}active{% endif %}">
+                                    <span>Todas las Categorías</span>
+                                    <span class="category-count">{{ total_libros }}</span>
+                                </a>
+                            </li>
+                            {% for cat in categorias %}
+                            <li class="category-item">
+                                <a href="?categoria={{ cat.id }}&q={{ query }}" 
+                                   class="category-link {% if request.GET.categoria == cat.id|stringformat:'s' %}active{% endif %}">
+                                    <span>{{ cat.nombre }}</span>
+                                    <span class="category-count">{{ cat.libro_count }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Área principal -->
+            <div class="shop-main">
+                <!-- Toolbar -->
+                <div class="shop-toolbar reveal-item" style="animation-delay: 0.2s">
+                    <div class="results-info">
+                        Mostrando <span class="results-count">{{ libros|length }}</span> de <span class="results-count">{{ total_libros }}</span> libros
+                        {% if query %}
+                        para "<strong>{{ query }}</strong>"
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Grid de libros -->
+                {% if libros %}
+                <div class="books-grid">
+                    {% for libro in libros %}
+                    <div class="book-card" data-delay-index="{{ forloop.counter0 }}">
+                        <div class="book-image">
+                            <img src="{{ libro.imagen.url }}" alt="{{ libro.titulo }}">
+                            <div class="book-overlay">
+                                <a href="{% url 'agregar_al_carrito' libro.id %}" class="add-to-cart-btn quick-action">
+                                    <i class="bi bi-cart-plus"></i>
+                                    <span>Añadir al Carrito</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="book-content">
+                            <h3 class="book-title">{{ libro.titulo }}</h3>
+                            <p class="book-author">{{ libro.autor.nombre }} {{ libro.autor.apellido }}</p>
+                            
+                            <div class="book-price">
+                                <span class="price-amount">${{ libro.precio|floatformat:0 }}</span>
+                                <a href="{% url 'agregar_al_carrito' libro.id %}" class="add-to-cart-btn">
+                                    <i class="bi bi-cart-plus"></i>
+                                    <span>Añadir</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Estado vacío -->
+                <div class="empty-state reveal-item">
+                    <div class="empty-illustration"></div>
+                    <h3 class="mb-3">No se encontraron libros</h3>
+                    <p class="lead mb-4" style="opacity: 0.7;">
+                        No encontramos libros que coincidan con tu búsqueda.<br>
+                        Intenta con otros términos o explora nuestras categorías.
+                    </p>
+                    <a href="{% url 'tienda' %}" class="empty-state-btn">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span>Ver Todos los Libros</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Observador para animaciones
+        const revealElements = document.querySelectorAll('.reveal-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Animación escalonada para tarjetas de libro
+        const bookCards = document.querySelectorAll('.book-card');
+        bookCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animationFillMode = 'forwards';
+        });
+        
+        // Funcionalidad de categorías
+        const categoryLinks = document.querySelectorAll('.category-link');
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                categoryLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Opcional: Scroll suave al inicio del contenido principal
+                setTimeout(() => {
+                    document.querySelector('.shop-main').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 300);
+            });
+        });
+        
+        // Búsqueda instantánea con debounce
+        let searchTimeout;
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            });
+        }
+        
+        // Efecto hover en tarjetas
+        bookCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Contador de productos en categorías (simulado)
+        const categoryCounts = document.querySelectorAll('.category-count');
+        categoryCounts.forEach(count => {
+            // Simular conteo animado
+            const target = parseInt(count.textContent);
+            if (!isNaN(target) && target > 0) {
+                let current = 0;
+                const increment = target / 30;
+                
+                const updateCount = () => {
+                    if (current < target) {
+                        current += increment;
+                        count.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        count.textContent = target;
+                    }
+                };
+                
+                setTimeout(updateCount, 500);
+            }
+        });
+        
+        // Mostrar/ocultar filtros en móviles
+        if (window.innerWidth < 992) {
+            const filtersToggle = document.createElement('button');
+            filtersToggle.className = 'btn btn-outline-primary d-lg-none mb-3';
+            filtersToggle.innerHTML = '<i class="bi bi-funnel me-2"></i>Mostrar Filtros';
+            filtersToggle.style.width = '100%';
+            filtersToggle.style.padding = '1rem';
+            filtersToggle.style.borderRadius = '12px';
+            filtersToggle.style.background = 'linear-gradient(135deg, var(--gold-leaf), var(--bronze))';
+            filtersToggle.style.color = 'white';
+            filtersToggle.style.border = 'none';
+            filtersToggle.style.fontWeight = '400';
+            
+            const filtersCard = document.querySelector('.filters-card');
+            if (filtersCard) {
+                filtersCard.style.display = 'none';
+                const shopSidebar = document.querySelector('.shop-sidebar');
+                shopSidebar.insertBefore(filtersToggle, filtersCard);
+                
+                filtersToggle.addEventListener('click', function() {
+                    if (filtersCard.style.display === 'none') {
+                        filtersCard.style.display = 'block';
+                        this.innerHTML = '<i class="bi bi-x me-2"></i>Ocultar Filtros';
+                    } else {
+                        filtersCard.style.display = 'none';
+                        this.innerHTML = '<i class="bi bi-funnel me-2"></i>Mostrar Filtros';
+                    }
+                });
+            }
+        }
+        
+        // Ajustar altura de la sidebar dinámicamente en desktop
+        function adjustSidebarHeight() {
+            if (window.innerWidth >= 992) {
+                const headerHeight = 140;
+                const footerHeight = 100;
+                const windowHeight = window.innerHeight;
+                const availableHeight = windowHeight - headerHeight - footerHeight;
+                
+                const sidebar = document.querySelector('.shop-sidebar');
+                if (sidebar) {
+                    sidebar.style.height = `${Math.max(availableHeight, 400)}px`;
+                }
+            }
+        }
+        
+        // Ajustar altura al cargar y al redimensionar
+        adjustSidebarHeight();
+        window.addEventListener('resize', adjustSidebarHeight);
+        
+        // Smooth scroll para la sidebar
+        const sidebar = document.querySelector('.shop-sidebar');
+        if (sidebar) {
+            sidebar.addEventListener('wheel', function(e) {
+                // Permitir scroll natural solo en la sidebar
+                this.scrollTop += e.deltaY;
+            });
+        }
+        
+        // Efecto visual para el input de búsqueda al focus
+        if (searchInput) {
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,590 @@
+<header>
+    <style>
+        /* ============================================
+           NAVBAR PREMIUM MINIMALISTA
+        ============================================ */
+        .navbar-premium {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            padding: 1.2rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        
+        .navbar-premium.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 0.8rem 0;
+            backdrop-filter: blur(25px);
+        }
+        
+        /* Logo */
+        .navbar-premium .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--jet);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .navbar-premium .navbar-brand::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-leaf), transparent);
+            transition: width 0.6s ease;
+        }
+        
+        .navbar-premium .navbar-brand:hover::before {
+            width: 100%;
+        }
+        
+        .navbar-premium .navbar-brand i {
+            color: var(--gold-leaf);
+            font-size: 2rem;
+            margin-right: 0.75rem;
+            transition: transform 0.6s ease;
+        }
+        
+        .navbar-premium .navbar-brand:hover i {
+            transform: rotate(-15deg);
+        }
+        
+        /* Toggler button */
+        .navbar-premium .navbar-toggler {
+            border: none;
+            background: transparent;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-premium .navbar-toggler:focus {
+            box-shadow: none;
+            outline: none;
+        }
+        
+        .navbar-premium .navbar-toggler span {
+            display: block;
+            width: 24px;
+            height: 1.5px;
+            background: var(--jet);
+            margin: 5px auto;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar-premium .navbar-toggler[aria-expanded="true"] span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .navbar-premium .navbar-toggler[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .navbar-premium .navbar-toggler[aria-expanded="true"] span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        /* Nav items */
+        .navbar-premium .nav-link {
+            color: var(--charcoal);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.25rem;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        
+        .navbar-premium .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-premium .nav-link:hover {
+            color: var(--jet);
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .navbar-premium .nav-link:hover i {
+            transform: translateX(3px);
+        }
+        
+        .navbar-premium .nav-link.active {
+            color: var(--gold-leaf);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .navbar-premium .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--gold-leaf), transparent);
+            transition: all 0.4s ease;
+            transform: translateX(-50%);
+        }
+        
+        .navbar-premium .nav-link:hover::after,
+        .navbar-premium .nav-link.active::after {
+            width: 60%;
+        }
+        
+        /* Dropdown menu */
+        .navbar-premium .dropdown-menu {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            animation: dropdownFade 0.3s ease;
+        }
+        
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .navbar-premium .dropdown-item {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: var(--charcoal);
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            margin: 0.25rem 0;
+        }
+        
+        .navbar-premium .dropdown-item i {
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .navbar-premium .dropdown-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--jet);
+            transform: translateX(5px);
+        }
+        
+        .navbar-premium .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Carrito de compras */
+        .cart-button {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            margin-right: 1rem;
+        }
+        
+        .cart-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .cart-button i {
+            font-size: 1.3rem;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Botones de autenticación */
+        .auth-button {
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+        
+        .auth-button i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .auth-button-outline {
+            background: transparent;
+            border-color: var(--steel-blue);
+            color: var(--steel-blue);
+            margin-right: 1rem;
+        }
+        
+        .auth-button-outline:hover {
+            background: var(--steel-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+        }
+        
+        .auth-button-primary {
+            background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-button-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .auth-button-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .auth-button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Perfil de usuario */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: var(--jet);
+        }
+        
+        .user-profile:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            overflow: hidden;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 400;
+            color: var(--jet);
+            font-size: 0.95rem;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--charcoal);
+            opacity: 0.7;
+        }
+        
+        .user-profile .dropdown-toggle::after {
+            display: none;
+        }
+        
+        /* Admin badge */
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            margin-left: 0.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .navbar-premium .navbar-collapse {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 1.5rem;
+                margin-top: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+            
+            .navbar-premium .navbar-nav {
+                padding: 1rem 0;
+            }
+            
+            .navbar-premium .nav-link {
+                margin: 0.5rem 0;
+                justify-content: center;
+            }
+            
+            .navbar-premium .dropdown-menu {
+                background: rgba(255, 255, 255, 0.95);
+                border: none;
+                box-shadow: none;
+                animation: none;
+            }
+            
+            .cart-button {
+                margin: 1rem auto;
+                display: flex;
+            }
+            
+            .auth-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .auth-button {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .user-profile {
+                justify-content: center;
+                margin: 1rem 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-premium .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-premium .navbar-brand i {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+
+    <nav class="navbar navbar-premium navbar-expand-lg">
+        <div class="container">
+            <!-- Logo y Nombre -->
+            <a class="navbar-brand" href="{% url 'inicio' %}">
+                <i class="bi bi-book-half me-2"></i>Logo's Bookstore
+            </a>
+            
+            <!-- Botón Hamburguesa para móviles -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Elementos del Navbar -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inicio' %}">
+                            <i class="bi bi-house-door me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tienda' %}">
+                            <i class="bi bi-shop me-1"></i>Tienda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'sobre_nosotros' %}">
+                            <i class="bi bi-info-circle me-1"></i>Sobre Nosotros
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contacto' %}">
+                            <i class="bi bi-envelope me-1"></i>Contacto
+                        </a>
+                    </li>
+                    
+                    <!-- Menú Admin (solo para administradores) -->
+                    {% if user.is_authenticated and user.is_staff %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-gear me-1"></i>Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin/" target="_blank"><i class="bi bi-speedometer2 me-2"></i>Panel Django</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+                <!-- Carrito de Compras -->
+                <a href="{% url 'carrito' %}" class="cart-button me-3">
+                    <i class="bi bi-cart3"></i>
+                    {% if num_items_carrito > 0 %}
+                        <span class="cart-count">{{ num_items_carrito }}</span>
+                    {% endif %}
+                </a>
+                
+                <!-- Autenticación de Usuario -->
+                <div class="d-flex align-items-center">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <a href="#" class="user-profile dropdown-toggle" data-bs-toggle="dropdown">
+                                <div class="user-avatar">
+                                    {{ user.username|first|upper }}
+                                </div>
+                                <div class="user-info d-none d-lg-block">
+                                    <span class="user-name">{{ user.username }}</span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'perfil' %}"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'mis_pedidos' %}"><i class="bi bi-receipt me-2"></i>Mis Pedidos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="auth-buttons d-flex">
+                            <a href="{% url 'login' %}" class="auth-button auth-button-outline">Iniciar Sesión</a>
+                            <a href="{% url 'registro' %}" class="auth-button auth-button-primary">Registrarse</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<script>
+    // Efecto de scroll en el navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar-premium');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Cerrar menú al hacer clic en un enlace en móviles
+    document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse.classList.contains('show')) {
+                const toggler = document.querySelector('.navbar-toggler');
+                toggler.click();
+            }
+        });
+    });
+    
+    // Animación de entrada del navbar
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbar = document.querySelector('.navbar-premium');
+        navbar.style.opacity = '0';
+        navbar.style.transform = 'translateY(-20px)';
+        
+        setTimeout(() => {
+            navbar.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            navbar.style.opacity = '1';
+            navbar.style.transform = 'translateY(0)';
+        }, 300);
+    });
+    
+    // Efecto hover en botones de autenticación
+    document.querySelectorAll('.auth-button').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transition = 'transform 0.3s ease';
+                icon.style.transform = 'translateX(5px)';
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transform = 'translateX(0)';
+            }
+        });
+    });
+</script>

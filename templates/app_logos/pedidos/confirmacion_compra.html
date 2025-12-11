@@ -1,0 +1,768 @@
+{% extends 'base.html' %}
+
+{% block title %}¡Compra Exitosa! - Logo's Bookstore{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       LAYOUT DE CONFIRMACIÓN PREMIUM
+    ============================================ */
+    .confirmation-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--crystal-blue) 0%, var(--pearl) 50%, var(--seashell) 100%);
+        overflow: hidden;
+    }
+    
+    /* Confetti minimalista */
+    .confetti-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0;
+        border-radius: 50%;
+        background: var(--gold-leaf);
+        animation: confetti-fall 8s linear forwards;
+    }
+    
+    .confetti-piece:nth-child(2n) {
+        background: var(--steel-blue);
+    }
+    
+    .confetti-piece:nth-child(3n) {
+        background: var(--bronze);
+    }
+    
+    .confetti-piece:nth-child(4n) {
+        background: var(--morning-blue);
+    }
+    
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100px) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+    
+    /* Tarjeta de confirmación */
+    .confirmation-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(30px);
+        border-radius: 24px;
+        padding: 4rem;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: var(--shadow-floating);
+        position: relative;
+        z-index: 2;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        overflow: hidden;
+        animation: card-appear 1s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    
+    .confirmation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    @keyframes card-appear {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    /* Checkmark dorado */
+    .checkmark-wrapper {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 3rem;
+        position: relative;
+    }
+    
+    .checkmark-circle {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        animation: checkmark-pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes checkmark-pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.4);
+        }
+    }
+    
+    .checkmark {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .checkmark-path {
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: checkmark-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        stroke: white;
+        stroke-width: 4;
+        fill: none;
+    }
+    
+    @keyframes checkmark-draw {
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    
+    /* Contenido textual */
+    .confirmation-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--platinum);
+        position: relative;
+    }
+    
+    .confirmation-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 2px;
+        background: var(--gold-leaf);
+    }
+    
+    .confirmation-title {
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-weight: 300;
+        color: var(--jet);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .confirmation-subtitle {
+        font-size: 1.1rem;
+        color: var(--charcoal);
+        opacity: 0.8;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* Número de pedido */
+    .order-number-container {
+        text-align: center;
+        margin: 2.5rem 0;
+    }
+    
+    .order-number-label {
+        display: block;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--charcoal);
+        opacity: 0.7;
+        margin-bottom: 0.5rem;
+    }
+    
+    .order-number {
+        font-family: 'Courier New', monospace;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--jet);
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        display: inline-block;
+        border: 1px solid var(--platinum);
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .order-number::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-leaf), transparent);
+    }
+    
+    /* Detalles del pedido */
+    .order-details {
+        background: linear-gradient(135deg, var(--ivory), var(--linen));
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 2.5rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        transition: var(--transition-smooth);
+    }
+    
+    .detail-item:hover {
+        transform: translateY(-2px);
+        background: white;
+        box-shadow: var(--shadow-soft);
+    }
+    
+    .detail-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .detail-content {
+        flex: 1;
+    }
+    
+    .detail-label {
+        display: block;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--charcoal);
+        opacity: 0.7;
+        margin-bottom: 0.25rem;
+    }
+    
+    .detail-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--jet);
+        line-height: 1.4;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 3rem;
+        padding-top: 3rem;
+        border-top: 1px solid var(--platinum);
+    }
+    
+    .action-button {
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition-smooth);
+        border: 1px solid transparent;
+        cursor: pointer;
+        min-width: 200px;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-button-primary {
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        color: white;
+    }
+    
+    .action-button-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .action-button-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .action-button-secondary {
+        background: transparent;
+        border-color: var(--steel-blue);
+        color: var(--steel-blue);
+    }
+    
+    .action-button-secondary:hover {
+        background: var(--steel-blue);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-button-outline {
+        background: transparent;
+        border-color: var(--charcoal);
+        color: var(--charcoal);
+    }
+    
+    .action-button-outline:hover {
+        background: var(--charcoal);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Mensaje de correo */
+    .email-notification {
+        text-align: center;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(70, 130, 180, 0.1);
+        border-radius: 12px;
+        color: var(--steel-blue);
+        animation: fadeInUp 0.6s ease-out 1.5s both;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Elementos decorativos flotantes */
+    .floating-element {
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.1;
+    }
+    
+    .floating-element.book {
+        width: 100px;
+        height: 140px;
+        background: linear-gradient(135deg, var(--gold-leaf), var(--bronze));
+        border-radius: 4px 12px 12px 4px;
+        animation: float-slow 8s ease-in-out infinite;
+    }
+    
+    .floating-element.circle {
+        width: 80px;
+        height: 80px;
+        border: 2px solid var(--gold-leaf);
+        border-radius: 50%;
+        animation: float-slow 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float-slow {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-30px) rotate(5deg);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .confirmation-container {
+            padding: 1rem;
+        }
+        
+        .confirmation-card {
+            padding: 2.5rem 2rem;
+        }
+        
+        .checkmark-wrapper {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .checkmark {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-button {
+            min-width: auto;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .floating-element {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .confirmation-card {
+            padding: 2rem 1.5rem;
+        }
+        
+        .confirmation-title {
+            font-size: 2rem;
+        }
+        
+        .order-details {
+            padding: 2rem 1.5rem;
+        }
+        
+        .detail-item {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+        
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+    }
+    
+    /* Animación de brillo sutil */
+    @keyframes subtle-shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    .shimmer-effect {
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        background-size: 1000px 100%;
+        animation: subtle-shimmer 4s infinite linear;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <!-- Confetti minimalista -->
+    <div class="confetti-wrapper" id="confettiWrapper"></div>
+    
+    <!-- Elementos decorativos flotantes -->
+    <div class="floating-element book" style="top: 10%; left: 5%;"></div>
+    <div class="floating-element circle" style="bottom: 15%; right: 8%;"></div>
+    <div class="floating-element book" style="top: 20%; right: 10%; transform: scale(0.8);"></div>
+    
+    <!-- Tarjeta principal -->
+    <div class="confirmation-card reveal">
+        <!-- Checkmark animado -->
+        <div class="checkmark-wrapper">
+            <div class="checkmark-circle">
+                <svg class="checkmark" viewBox="0 0 52 52">
+                    <path class="checkmark-path" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Encabezado -->
+        <div class="confirmation-header">
+            <h1 class="confirmation-title">¡Compra Confirmada!</h1>
+            <p class="confirmation-subtitle">
+                Tu pedido ha sido procesado exitosamente. En breve recibirás un correo con los detalles 
+                de tu compra y el tiempo estimado de entrega.
+            </p>
+        </div>
+        
+        <!-- Número de pedido -->
+        <div class="order-number-container">
+            <span class="order-number-label">Número de confirmación</span>
+            <div class="order-number shimmer-effect">
+                {% if pedido.numero_pedido %}
+                    {{ pedido.numero_pedido }}
+                {% else %}
+                    PED-{{ pedido.id|stringformat:"08d" }}
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Detalles del pedido -->
+        <div class="order-details">
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <div class="detail-content">
+                        <span class="detail-label">Fecha del pedido</span>
+                        <span class="detail-value">{{ pedido.fecha_orden|date:"d/m/Y H:i" }}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <div class="detail-content">
+                        <span class="detail-label">Total</span>
+                        <span class="detail-value">${{ pedido.total }}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="detail-content">
+                        <span class="detail-label">Estado</span>
+                        <span class="detail-value">{{ pedido.estado }}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <div class="detail-content">
+                        <span class="detail-label">Método de pago</span>
+                        <span class="detail-value">Tarjeta</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+            <a href="{% url 'detalle_pedido' pedido.id %}" class="action-button action-button-primary">
+                <i class="bi bi-receipt"></i>
+                <span>Ver Detalles del Pedido</span>
+            </a>
+            
+            <a href="{% url 'tienda' %}" class="action-button action-button-secondary">
+                <i class="bi bi-shop"></i>
+                <span>Seguir Comprando</span>
+            </a>
+            
+            <a href="{% url 'inicio' %}" class="action-button action-button-outline">
+                <i class="bi bi-house"></i>
+                <span>Volver al Inicio</span>
+            </a>
+        </div>
+        
+        <!-- Notificación de correo -->
+        <div class="email-notification">
+            <i class="bi bi-envelope-check me-2"></i>
+            Te hemos enviado un correo de confirmación a <strong>{{ user.email }}</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Crear confetti minimalista
+        function createConfetti() {
+            const wrapper = document.getElementById('confettiWrapper');
+            const colors = [
+                'var(--gold-leaf)',
+                'var(--steel-blue)',
+                'var(--bronze)',
+                'var(--morning-blue)',
+                'var(--navy-muted)'
+            ];
+            
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                
+                // Posición inicial aleatoria
+                const startX = Math.random() * 100;
+                confetti.style.left = `${startX}vw`;
+                
+                // Retraso aleatorio
+                const delay = Math.random() * 2;
+                confetti.style.animationDelay = `${delay}s`;
+                
+                // Duración aleatoria
+                const duration = 3 + Math.random() * 5;
+                confetti.style.animationDuration = `${duration}s`;
+                
+                // Tamaño aleatorio
+                const size = 6 + Math.random() * 12;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                // Color aleatorio
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.backgroundColor = color;
+                
+                // Forma aleatoria
+                if (Math.random() > 0.7) {
+                    confetti.style.borderRadius = '2px';
+                }
+                
+                wrapper.appendChild(confetti);
+                
+                // Eliminar después de la animación
+                setTimeout(() => {
+                    if (confetti.parentNode === wrapper) {
+                        wrapper.removeChild(confetti);
+                    }
+                }, (duration + delay) * 1000);
+            }
+        }
+        
+        // Crear confetti inicial
+        createConfetti();
+        
+        // Crear confetti periódicamente
+        setInterval(createConfetti, 1500);
+        
+        // Animación de botones
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+        
+        // Efecto de sonido simulado (opcional)
+        const playSuccessSound = () => {
+            console.log('🎉 ¡Compra exitosa en Logo\'s Bookstore!');
+        };
+        
+        setTimeout(playSuccessSound, 500);
+        
+        // Animación de entrada para elementos
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Efecto de brillo en el número de pedido
+        const orderNumber = document.querySelector('.order-number');
+        if (orderNumber) {
+            setInterval(() => {
+                orderNumber.classList.toggle('shimmer-effect');
+            }, 4000);
+        }
+        
+        // Mostrar notificación de éxito
+        const showSuccessNotification = () => {
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed top-0 end-0 m-3 p-3 bg-success text-white rounded-3 animate__animated animate__fadeInDown';
+            notification.style.zIndex = '9999';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div>¡Compra exitosa! Tu pedido está siendo procesado.</div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('animate__fadeOutUp');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 3000);
+        };
+        
+        setTimeout(showSuccessNotification, 1000);
+    });
+</script>
+{% endblock %}
