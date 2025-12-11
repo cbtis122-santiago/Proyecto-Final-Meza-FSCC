@@ -1,30 +1,27 @@
-"""
-Django settings for backend_logos project.
-"""
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from decouple import config
 
-# Cargar variables de entorno desde el archivo .env
-load_dotenv()
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent.parent # Adjusted for project root
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# --- MEJORA DE SEGURIDAD ---
-# La SECRET_KEY se lee desde una variable de entorno.
-# Se proporciona una clave por defecto SOLO para desarrollo si no se encuentra.
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-for-dev')
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
 
-# El modo DEBUG también se lee desde una variable de entorno. Por defecto es True.
-# En producción, esta variable debería ser 'False'.
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# ALLOWED_HOSTS se lee desde una variable de entorno.
-# Se proporciona un valor por defecto para desarrollo local.
-# En producción, debe ser una lista de los dominios permitidos.
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,.cloudworkstations.dev').split(',')
+# Combine hosts from .env with the required cloud workstations host
+allowed_hosts_env = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = list(set(allowed_hosts_env + ['.cloudworkstations.dev']))
 
+CSRF_TRUSTED_ORIGINS = ['https://*.cloudworkstations.dev']
+
+# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,7 +48,7 @@ ROOT_URLCONF = 'backend_logos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -59,7 +56,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'app_logos.context_processors.carrito_context', # Procesador de contexto personalizado
+                'app_logos.context_processors.carrito_context',  # <-- AGREGADO
             ],
         },
     },
@@ -67,12 +64,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend_logos.wsgi.application'
 
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Password validation
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -89,30 +92,36 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'es-mx'
-TIME_ZONE = 'America/Mexico_City'
+# Internationalization
+# https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Añadido para producción
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+# Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- MEJORAS DE AUTENTICACIÓN ---
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'inicio'
-LOGOUT_REDIRECT_URL = 'inicio'
-
-# --- MEJORAS DE SEGURIDAD EN PRODUCCIÓN (cuando DEBUG=False) ---
-# Descomentar estas líneas en un entorno de producción real.
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_HSTS_SECONDS = 31536000 # 1 año
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
+# CSRF Settings
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
